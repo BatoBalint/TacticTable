@@ -11,15 +11,14 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     private float onTouchGrowScale = 1.1f;
     [SerializeField]
-    private bool ifGrabbedNoCollider = true;
+    private bool ifGrabbedNoCollider = false;   // can drag over other players without moving them
 
-    private Touch myTouch = new Touch();
-    private bool followFinger = false;
-    private Vector3 grabOffset = Vector3.zero;
+    private Touch myTouch = new Touch();        // the touch that is moving the player
+    private bool followFinger = false;          // the player should follow the touch
+    private Vector3 grabOffset = Vector3.zero;  // the player and the touch offset
 
-    private Vector3 originalScale;
+    private Vector3 originalScale;              // for later developement if scale must be changed
     
-
     void Start()
     {
         originalScale = transform.localScale;
@@ -65,17 +64,19 @@ public class PlayerScript : MonoBehaviour
     private void GrabStartEvents()
     {
         if (onTouchGrowScale != 1f) transform.localScale = originalScale * onTouchGrowScale;
-        if (ifGrabbedNoCollider) circleCollider.isTrigger = true;
+        if (ifGrabbedNoCollider) circleCollider.enabled = false;
     }
 
     private void GrabEndEvents()
     {
         if (onTouchGrowScale != 1f) transform.localScale = originalScale;
-        if (ifGrabbedNoCollider) circleCollider.isTrigger = false;
+        if (ifGrabbedNoCollider) circleCollider.enabled = true;
     }
 
     private Vector3 GetWorldPos(Vector2 pos)
     {
-        return Camera.main.ScreenToWorldPoint(pos) + new Vector3(0f, 0f, 10f);
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(pos);
+        worldPos.z = 0;
+        return worldPos;
     }
 }
