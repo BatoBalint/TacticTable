@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 using UnityEngine;
@@ -15,8 +16,9 @@ public class PlayerScript : MonoBehaviour
     private bool ifGrabbedNoCollider = false;   // can drag over other players without moving them
 
     private static List<PlayerScript> pScripts = new List<PlayerScript>();
-    private Touch myTouch;                     // the touch that is moving the player
+    private int idAdjustment = 0;
     private bool touchIsActive = false;
+    private int fingerId = -1;
     private Vector3 grabOffset = Vector3.zero;  // the player and the touch offset
 
     private Vector3 originalScale;              // for later developement if scale must be changed
@@ -30,36 +32,47 @@ public class PlayerScript : MonoBehaviour
     {
         CheckInputs();
 
-        /*if (touchIsActive) MoveFigure();*/
+        if (touchIsActive) MoveFigure();
     }
 
     private void CheckInputs() 
     {
         foreach (Touch t in Input.touches)
         {
-            CheckFingerInput(t);
+            CheckTouchInput(t);
         }
-        if (touchIsActive && Input.GetTouch(myTouch.fingerId).phase == TouchPhase.Ended)
-        {
-            AdjustTouchIds(myTouch.fingerId);
-            pScripts.Remove(this);
-            touchIsActive = false;
 
-            GrabEndEvents();
+        if (touchIsActive && Input.touches[fingerId].phase == TouchPhase.Ended)
+        {
+            TouchEnded();
         }
+
+        fingerId -= idAdjustment;
+        idAdjustment = 0;
+    }
+    
+    public void TouchEnded() 
+    {
+        pScripts.Remove(this);
+        touchIsActive = false;
+        fingerId = -1;
+
+        GrabEndEvents();
     }
 
     private void MoveFigure() 
     {
-        transform.position = GetWorldPos(Input.GetTouch(myTouch.fingerId).position) - grabOffset;
+        if (fingerId == -1) return;
+        transform.position = GetWorldPos(Input.touches[fingerId].position) - grabOffset;
     }
 
-    private void CheckFingerInput(Touch t)
+    private void CheckTouchInput(Touch t)
     {
         if (t.phase == TouchPhase.Began && circleCollider.bounds.Contains(GetWorldPos(t.position)) && !touchIsActive)
         {
+            fingerId = TouchHandler.GetFingerId();
+
             grabOffset = GetWorldPos(t.position) - transform.position;
-            myTouch = t;
             touchIsActive = true;
             pScripts.Add(this);
 
@@ -79,15 +92,24 @@ public class PlayerScript : MonoBehaviour
         if (ifGrabbedNoCollider) circleCollider.enabled = true;
     }
 
-    private void AdjustTouchIds(int removedIndex) 
+    public static void AdjustTouchAllId(int removedIndex)
     {
         foreach (var s in pScripts)
         {
-            //TODO
+            s.AdjustOwnId(removedIndex);
         }
     }
 
-    static String listToString(String prefix, List<int> list)
+    private void AdjustOwnId(int releasedId)
+    {
+        if (releasedId < fingerId)
+        {
+            idAdjustment++;
+        }
+    }
+
+    // Debug
+    /*static String listToString(String prefix, List<int> list)
     {
         String result = prefix;
         String deli = "";
@@ -97,7 +119,7 @@ public class PlayerScript : MonoBehaviour
             deli = ",";
         }
         return result;
-    }
+    }*/
 
     private Vector3 GetWorldPos(Vector2 pos)
     {
