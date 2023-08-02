@@ -1,0 +1,66 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.ConstrainedExecution;
+using System.Text;
+using UnityEngine;
+
+public class DiskScript : MonoBehaviour
+{ 
+    private bool followFinger = false;
+    private int touchId = -1;
+    private Vector3 touchOffset = Vector2.zero;
+
+    void Start()
+    {
+        
+    }
+
+    void Update()
+    {
+        MoveToTouch();
+    }
+
+    private void MoveToTouch()
+    {
+        if (followFinger)
+        {
+            if (Input.touchCount == 0)
+            {
+                DiskReleased();
+                return;
+            }
+
+            int i = 0;
+            while (i < Input.touchCount && Input.touches[i].fingerId != touchId) ++i;
+
+            transform.position = GetWorldPos(Input.touches[i].position) - touchOffset;
+        }
+    }
+
+    public void DiskGrabbed(int touchId)
+    {
+        this.touchId = touchId;
+        touchOffset = GetWorldPos(Input.touches[touchId].position) - transform.position;
+        followFinger = true;
+    }
+
+    public void DiskReleased()
+    {
+        touchId = -1;
+        followFinger = false;
+    }
+
+    public CircleCollider2D GetCollider()
+    {
+        return transform.GetComponent<CircleCollider2D>();
+    }
+
+    private Vector3 GetWorldPos(Vector2 pos)
+    {
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(pos);
+        worldPos.z = 0;
+        return worldPos;
+    }
+}
