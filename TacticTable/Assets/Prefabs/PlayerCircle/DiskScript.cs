@@ -12,9 +12,15 @@ public class DiskScript : MonoBehaviour
     private int touchId = -1;
     private Vector3 touchOffset = Vector2.zero;
 
+    private Vector3 originalScale;
+    [SerializeField]
+    private float scaleGrowthModifier = 1.1f;
+    [SerializeField]
+    private bool growWhenGrabbed = false;
+
     void Start()
     {
-        
+        originalScale = transform.localScale;
     }
 
     void Update()
@@ -22,6 +28,7 @@ public class DiskScript : MonoBehaviour
         MoveToTouch();
     }
 
+    // Moves the disk to the touch
     private void MoveToTouch()
     {
         if (followFinger)
@@ -39,17 +46,23 @@ public class DiskScript : MonoBehaviour
         }
     }
 
+    // Sets the disk to follow the given touch
     public void DiskGrabbed(int touchId)
     {
         this.touchId = touchId;
         touchOffset = GetWorldPos(Input.touches[touchId].position) - transform.position;
         followFinger = true;
+
+        if (growWhenGrabbed) transform.localScale *= scaleGrowthModifier;
     }
 
+    // Releases the touch and sets things back to the original values
     public void DiskReleased()
     {
         touchId = -1;
         followFinger = false;
+
+        transform.localScale = originalScale;
     }
 
     public CircleCollider2D GetCollider()

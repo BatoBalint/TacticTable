@@ -36,6 +36,7 @@ public class DiskHandler : MonoBehaviour
         }
     }
 
+    // Handles the new touch and notifies the grabbed disk
     private void CheckNewTouch()
     {
         bool found = false;
@@ -59,16 +60,7 @@ public class DiskHandler : MonoBehaviour
         }
     }
 
-    /*private void DebugfingerIdDictionary()
-    {
-        string text = "";
-        foreach (KeyValuePair<int, DiskScript> entry in fingerIdDiskPairs)
-        {
-            text += "; " + entry.Key + ": " + entry.Value;
-        }
-        Debug.LogWarning(text);
-    }*/
-
+    // Checks for touch releases and notifies the disk
     private void CheckReleasedTouch()
     {
         foreach (Touch t in Input.touches) 
