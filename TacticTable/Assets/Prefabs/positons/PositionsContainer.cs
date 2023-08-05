@@ -48,10 +48,7 @@ public class PositionsContainer : MonoBehaviour
             yield return null;
         }
 
-        // Ensure all objects reach their exact target positions at the end
-        for (int i = 0; i < korongok.Count; i++)
-        {
-            korongok[i].transform.position = targetPositions[i];
-        }
+        
+       
     }
 }
