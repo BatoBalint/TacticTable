@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Line : MonoBehaviour
+public class LineScript : MonoBehaviour
 {
     [SerializeField] private LineRenderer _renderer;
 
@@ -24,6 +24,6 @@ public class Line : MonoBehaviour
             return true;
         }
 
-        return Vector2.Distance(_renderer.GetPosition(_renderer.positionCount-1),pos)>DrawMeneger.RESOLUTION;
+        return Vector2.Distance(_renderer.GetPosition(_renderer.positionCount - 1), pos) > DrawManager.RESOLUTION;
     }
 }

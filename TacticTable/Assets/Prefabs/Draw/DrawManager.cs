@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DrawMeneger : MonoBehaviour
+public class DrawManager : MonoBehaviour
 {
     private Camera _cam;
-    [SerializeField] private Line _linePrefab;
+    [SerializeField] private LineScript _linePrefab;
 
-    private Line _currentLine;
+    private LineScript _currentLine;
 
     public const float RESOLUTION = .1f;
 
@@ -23,7 +23,7 @@ public class DrawMeneger : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            _currentLine = Instantiate(_linePrefab,mousePos,Quaternion.identity);
+            _currentLine = Instantiate(_linePrefab, mousePos, Quaternion.identity);
         }
 
         if (Input.GetMouseButton(0))
