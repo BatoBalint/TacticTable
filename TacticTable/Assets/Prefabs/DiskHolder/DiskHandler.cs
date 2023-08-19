@@ -40,7 +40,7 @@ public class DiskHandler : MonoBehaviour
     private void CheckNewTouch()
     {
         bool found = false;
-
+        
         for (int i = Input.touchCount - 1; i >= 0 && !found; --i)
         {
             Touch t = Input.touches[i];
@@ -51,6 +51,7 @@ public class DiskHandler : MonoBehaviour
                     if (diskColliders[j].bounds.Contains(GetWorldPos(t.position)))
                     {
                         found = true;
+                        
                         disks[j].DiskGrabbed(t.fingerId);
                         if (!fingerIdDiskPairs.ContainsKey(t.fingerId)) fingerIdDiskPairs.Add(t.fingerId, disks[j]);
                         else fingerIdDiskPairs[t.fingerId] = disks[j];
@@ -63,6 +64,7 @@ public class DiskHandler : MonoBehaviour
     // Checks for touch releases and notifies the disk
     private void CheckReleasedTouch()
     {
+        
         foreach (Touch t in Input.touches) 
         {
             if (t.phase == TouchPhase.Ended && fingerIdDiskPairs.ContainsKey(t.fingerId))
