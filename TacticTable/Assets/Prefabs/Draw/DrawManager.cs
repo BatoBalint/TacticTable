@@ -23,6 +23,12 @@ public class DrawManager : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
+            // Edit made by Balint
+            if (_currentLine != null)
+            {
+                _currentLine.Test();
+            }
+            // Edit end
             _currentLine = Instantiate(_linePrefab, mousePos, Quaternion.identity);
         }
 

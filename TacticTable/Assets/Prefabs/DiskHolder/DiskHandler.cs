@@ -8,6 +8,8 @@ public class DiskHandler : MonoBehaviour
     private List<CircleCollider2D> diskColliders;
     private Dictionary<int, DiskScript> fingerIdDiskPairs;
 
+    public static bool canGrabDisks = true;
+
     void Start()
     {
         fingerIdDiskPairs = new Dictionary<int, DiskScript>();
@@ -25,7 +27,7 @@ public class DiskHandler : MonoBehaviour
     void Update()
     {
         CheckReleasedTouch();
-        if (prevTouchCount != Input.touchCount)
+        if (canGrabDisks && prevTouchCount != Input.touchCount)
         {
             if (prevTouchCount < Input.touchCount) CheckNewTouch();
 
