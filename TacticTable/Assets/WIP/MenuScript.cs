@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MenuScript : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class MenuScript : MonoBehaviour
     { 
         DisableAllPanels();
         panel.SetActive(true);
+        panel.GetComponent<ScrollRect>().verticalNormalizedPosition = 1;
     }
 
     private void DisableAllPanels()
