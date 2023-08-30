@@ -10,9 +10,10 @@ public class DiskScriptSecond : MonoBehaviour
 {
     public static List<DiskScriptSecond> selectedDisks = new List<DiskScriptSecond>();
 
+    public bool selectable = true;
     [SerializeField]
     private GameObject diskSelectionMarker;
-    private new CircleCollider2D collider;
+    private CircleCollider2D circleCollider;
 
     private bool diskIsSelected = false;
     private bool followFinger = false;
@@ -20,10 +21,9 @@ public class DiskScriptSecond : MonoBehaviour
     private float touchStart = 0;
     private Vector3 touchOffset;
 
-
     public void Awake()
     {
-        collider = transform.GetComponent<CircleCollider2D>();
+        circleCollider = transform.GetComponent<CircleCollider2D>();
     }
 
     public void Update()
@@ -33,7 +33,7 @@ public class DiskScriptSecond : MonoBehaviour
         {
             Touch t = Input.GetTouch(i);
 
-            if (collider.bounds.Contains(GetWorldPos(t.position)) && t.phase == TouchPhase.Began)
+            if (circleCollider.bounds.Contains(GetWorldPos(t.position)) && t.phase == TouchPhase.Began)
             {
                 followFinger = true;
                 fingerId = t.fingerId;
@@ -59,18 +59,45 @@ public class DiskScriptSecond : MonoBehaviour
         ToggleDiskSelection();
     }
 
+    public void TurnOffCollision()
+    {
+        circleCollider.isTrigger = true;
+    }
+
+    public void TurnOnCollisoin()
+    { 
+        circleCollider.isTrigger = false;
+    }
+
     private void ToggleDiskSelection()
     {
         if (diskIsSelected)
         {
-            diskSelectionMarker.SetActive(false);
-            diskIsSelected = false;
+            UnselectDisk();
         }
         else
         {
+            SelectDisk();
+        }
+    }
+
+    public void SelectDisk()
+    {
+        if (selectable)
+        {
             diskSelectionMarker.SetActive(true);
             diskIsSelected = true;
+
+            selectedDisks.Add(this);
         }
+    }
+
+    public void UnselectDisk()
+    {
+        diskSelectionMarker.SetActive(false);
+        diskIsSelected = false;
+
+        selectedDisks.Remove(this);
     }
 
     private Vector3 GetWorldPos(Vector2 pos)
