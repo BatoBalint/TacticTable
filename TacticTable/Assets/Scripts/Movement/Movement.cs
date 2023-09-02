@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class Movement : MonoBehaviour
+public abstract class Movement
 {
    [SerializeField]
     protected GameObject disk;

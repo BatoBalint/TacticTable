@@ -6,7 +6,7 @@ using System.Runtime.ConstrainedExecution;
 using System.Text;
 using UnityEngine;
 
-public class DiskScript : MonoBehaviour
+public class DiskScriptOld : MonoBehaviour
 { 
     private bool followFinger = false;
     private int touchId = -1;

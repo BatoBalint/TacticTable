@@ -4,22 +4,22 @@ using UnityEngine;
 public class DiskHandler : MonoBehaviour
 {
     private int prevTouchCount = 0;
-    private List<DiskScript> disks;
+    private List<DiskScriptOld> disks;
     private List<CircleCollider2D> diskColliders;
-    private Dictionary<int, DiskScript> fingerIdDiskPairs;
+    private Dictionary<int, DiskScriptOld> fingerIdDiskPairs;
 
     public static bool canGrabDisks = true;
 
     void Start()
     {
-        fingerIdDiskPairs = new Dictionary<int, DiskScript>();
+        fingerIdDiskPairs = new Dictionary<int, DiskScriptOld>();
 
-        disks = new List<DiskScript>();
+        disks = new List<DiskScriptOld>();
         diskColliders = new List<CircleCollider2D>();
 
         for (int i = 0; i < transform.childCount; i++)
         { 
-            disks.Add(transform.GetChild(i).GetComponent<DiskScript>());
+            disks.Add(transform.GetChild(i).GetComponent<DiskScriptOld>());
             diskColliders.Add(disks[i].GetCollider());
         }
     }

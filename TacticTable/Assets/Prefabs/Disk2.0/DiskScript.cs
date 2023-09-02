@@ -6,11 +6,13 @@ using System.Runtime.ConstrainedExecution;
 using System.Text;
 using UnityEngine;
 
-public class DiskScriptSecond : MonoBehaviour
+public class DiskScript : MonoBehaviour
 {
-    public static List<DiskScriptSecond> selectedDisks = new List<DiskScriptSecond>();
+    public static List<DiskScript> selectedDisks = new List<DiskScript>();
+    public static bool selectOnMove = false;
 
     public bool selectable = true;
+    public Vector3 positionAtSelection = Vector3.zero;
     [SerializeField]
     private GameObject diskSelectionMarker;
     private CircleCollider2D circleCollider;
@@ -33,16 +35,20 @@ public class DiskScriptSecond : MonoBehaviour
         {
             Touch t = Input.GetTouch(i);
 
-            if (circleCollider.bounds.Contains(GetWorldPos(t.position)) && t.phase == TouchPhase.Began)
+            if (circleCollider.bounds.Contains(ConvertToWorldPosition(t.position)) && t.phase == TouchPhase.Began)
             {
                 followFinger = true;
                 fingerId = t.fingerId;
                 touchStart = Time.time;
-                touchOffset = GetWorldPos(t.position) - transform.position;
+                touchOffset = ConvertToWorldPosition(t.position) - transform.position;
             }
             else if (followFinger && t.fingerId == fingerId && t.phase == TouchPhase.Moved)
             {
-                transform.position = GetWorldPos(t.position) - touchOffset;
+                if (!diskIsSelected && selectOnMove)
+                {
+                    SelectDisk();
+                }
+                transform.position = ConvertToWorldPosition(t.position) - touchOffset;
             }
             else if (followFinger && t.fingerId == fingerId && t.phase == TouchPhase.Ended)
             {
@@ -88,6 +94,7 @@ public class DiskScriptSecond : MonoBehaviour
             diskSelectionMarker.SetActive(true);
             diskIsSelected = true;
 
+            positionAtSelection = transform.position;
             selectedDisks.Add(this);
         }
     }
@@ -100,7 +107,7 @@ public class DiskScriptSecond : MonoBehaviour
         selectedDisks.Remove(this);
     }
 
-    private Vector3 GetWorldPos(Vector2 pos)
+    private Vector3 ConvertToWorldPosition(Vector2 pos)
     {
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(pos);
         worldPos.z = 0;
