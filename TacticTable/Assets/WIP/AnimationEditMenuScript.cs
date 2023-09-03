@@ -1,40 +1,34 @@
 using System;
-using System.Runtime.CompilerServices;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class AnimationEditMenuScript : MonoBehaviour
 {
     [SerializeField]
-    private GameObject buttonGroups;
+    private GameObject _buttonGroups;
     [SerializeField]
-    private GameObject messageText;
-    [SerializeField]
-    private Timeline timeline;
-    private TimelineUI timelineUIref;
+    private Timeline _timeline;
+    private TimelineUI _timelineUIref;
 
-    private AnimationMode animationMode = AnimationMode.None;
-    private Func<int> animationModeUpdate;
-
-    private string baseTopMessage = "Jelenlegi animáció:";
-
+    private AnimationMode _animationMode = AnimationMode.None;
+    private Func<int> _animationModeUpdate;
 
     private void Awake()
     {
-        timelineUIref = timeline.GetComponent<TimelineUI>();
-        if (timelineUIref == null)
-        {
-            Debug.Log("Couldnt get component!");
-        }
+        _timelineUIref = _timeline.GetComponent<TimelineUI>();
+        AnimEditEventSystem.Instance.onAnimMenuButtonClick += SetMode;
+    }
+
+    private void OnDestroy()
+    {
+        AnimEditEventSystem.Instance.onAnimMenuButtonClick -= SetMode;
     }
 
     private void Update()
     {
-        if (animationModeUpdate != null)
+        if (_animationModeUpdate != null)
         {
-            animationModeUpdate();
+            _animationModeUpdate();
         }
     }
 
@@ -47,40 +41,24 @@ public class AnimationEditMenuScript : MonoBehaviour
 
     private void DisableAllPanels()
     {
-        for (int i = 0; i < buttonGroups.transform.childCount; i++)
+        for (int i = 0; i < _buttonGroups.transform.childCount; i++)
         {
-            buttonGroups.transform.GetChild(i).gameObject.SetActive(false);
+            _buttonGroups.transform.GetChild(i).gameObject.SetActive(false);
         }
     }
 
-    private void ResetAnimationMode()
+    private void SetMode(AnimationMode mode)
     {
-        animationMode = AnimationMode.None;
-        animationModeUpdate = null;
-
-        DiskScript.selectOnMove = false;
-
-        messageText.GetComponent<TextMeshProUGUI>().text = baseTopMessage;
-    }
-
-    public void ButtonTestFunction()
-    {
-        Debug.Log("Button was pressed");
-    }
-
-    public void MoveButtonClick()
-    {
-        if (animationMode == AnimationMode.Move)
+        if (_animationMode == mode) mode = AnimationMode.None;
+        _animationMode = mode;
+        switch (mode)
         {
-            ResetAnimationMode();
-        }
-        else 
-        {
-            animationMode = AnimationMode.Move;
-            animationModeUpdate = MoveUpdate;
-            DiskScript.selectOnMove = true;
-
-            messageText.GetComponent<TextMeshProUGUI>().text = baseTopMessage + " Mozgás";
+            case AnimationMode.Move:
+                _animationModeUpdate = MoveUpdate;
+                break;
+            default:
+                _animationModeUpdate = null;
+                break;
         }
     }
 
@@ -99,23 +77,28 @@ public class AnimationEditMenuScript : MonoBehaviour
         {
             GameObject disk = DiskScript.selectedDisks[0].gameObject;
             Timeline.Add(new LinearMovement(disk, disk.GetComponent<DiskScript>().positionAtSelection, disk.transform.position));
-            timelineUIref.UpdateTimeline();
+            _timelineUIref.UpdateTimeline();
+            SetMode(AnimationMode.None);
 
-            ResetAnimationMode();
             while (DiskScript.selectedDisks.Count > 0) DiskScript.selectedDisks[0].UnselectDisk();
         }
     }
 
     public void TestFunc()
     {
-        timeline.Play();
+        _timeline.Play();
     }
 }
 
-enum AnimationMode
+public enum AnimationMode
 {
     None,
     Move,
+    MoveWithBall,
+    Pass,
     Switch,
-    Cross,
+    FrontCross,
+    FrontCrossWithBall,
+    RearCross,
+    RearCrossWithBall,
 }
