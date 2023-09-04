@@ -14,8 +14,7 @@ public class LinearMovement : Movement
 
         
         Vector3 newPosition = Vector3.Lerp(startPos, endPos, time);
-        Debug.Log(newPosition);
-        Debug.Log(disk);
+       
 
         disk.transform.position = newPosition;
     }
