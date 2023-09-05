@@ -20,4 +20,13 @@ public class AnimEditEventSystem : MonoBehaviour
             onAnimMenuButtonClick(mode);
         }
     }
+
+    public event Action<DiskScript> onDiskPositionChange;
+    public void DiskPositionChange(DiskScript diskScript)
+    {
+        if (onDiskPositionChange != null)
+        {
+            onDiskPositionChange(diskScript);
+        }
+    }
 }

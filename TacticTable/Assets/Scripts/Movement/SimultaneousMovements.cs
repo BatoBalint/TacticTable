@@ -7,7 +7,7 @@ public class SimultaneousMovements : Movement
     [SerializeField]
     private List<Movement> movements = new List<Movement>();
 
-    public SimultaneousMovements(GameObject disk, Vector3 startPos, Vector3 endPos) : base(disk, startPos, endPos)
+    public SimultaneousMovements()
     {
     }
     
@@ -25,12 +25,14 @@ public class SimultaneousMovements : Movement
         return returnList;
     }
 
-    public override void Animate(float time)
+    public override bool Animate(float time)
     {
         foreach(Movement m in movements)
         {
             m.Animate(time);
         }
+
+        return false;
     }
 
 }

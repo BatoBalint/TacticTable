@@ -11,7 +11,7 @@ public class AnimationEditSceneManager : MonoBehaviour
 
     private void ResetScene()
     {
-        while (DiskScript.selectedDisks.Count > 0) DiskScript.selectedDisks[0].UnselectDisk();
+        while (DiskScript.SelectedDisks.Count > 0) DiskScript.SelectedDisks[0].UnselectDisk();
         Timeline.ClearMoves();
     }
 }

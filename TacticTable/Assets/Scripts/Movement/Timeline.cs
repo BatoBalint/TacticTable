@@ -10,12 +10,28 @@ public class Timeline : MonoBehaviour
     private float animationTime = 0.0f;
     public static List<Movement> moves = new List<Movement>();
     public int index = 0;
+    private int _partialAnimationEndIndex = 0;
 
     private void Update()
     {
-        if (!timelinePlays)
-            return;
+        if (_partialAnimationEndIndex != 0 && index == _partialAnimationEndIndex)
+        {
+            Stop();
+            _partialAnimationEndIndex = 0;
+        }
 
+        if (timelinePlays) Animate();
+    }
+
+    public void AnimateAtIndex(int moveIndex)
+    { 
+        _partialAnimationEndIndex = moveIndex + 1;
+        index = moveIndex;
+        Play();
+    }
+
+    private void Animate()
+    {
         if (index == moves.Count)
         {
             Stop();
@@ -36,9 +52,9 @@ public class Timeline : MonoBehaviour
             animationEnded = true;
         }
 
-        moves[index].Animate(animationTime);
+        bool animationFinished = moves[index].Animate(animationTime);
 
-        if (animationEnded)
+        if (animationEnded || animationFinished)
             NextAnimation();
     }
 
@@ -115,7 +131,18 @@ public class Timeline : MonoBehaviour
 
     public static void ClearMoves()
     {
-        moves.Clear();
+        while (moves.Count > 1)
+        {
+            moves.RemoveAt(1);
+        }
+    }
+
+    public static void RemoveAt(int removeIndex)
+    {
+        if (removeIndex < 1 || removeIndex > moves.Count - 1)
+            return;
+
+        moves.RemoveAt(removeIndex);
     }
 
     public static void Insert(int moveIndex, int newMoveIndex)

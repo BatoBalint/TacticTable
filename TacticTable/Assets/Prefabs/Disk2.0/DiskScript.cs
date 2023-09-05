@@ -8,11 +8,13 @@ using UnityEngine;
 
 public class DiskScript : MonoBehaviour
 {
-    public static List<DiskScript> selectedDisks = new List<DiskScript>();
-    public static bool selectOnMove = false;
+    public static List<DiskScript> SelectedDisks = new List<DiskScript>();
+    public static bool SelectOnMove = false;
 
-    public bool selectable = true;
-    public Vector3 positionAtSelection = Vector3.zero;
+    public bool Selectable = true;
+    public bool IsBall = false;
+    public bool IsBlue = false;
+    public Vector3 PositionAtSelection = Vector3.zero;
     [SerializeField]
     private GameObject diskSelectionMarker;
     private CircleCollider2D circleCollider;
@@ -44,11 +46,15 @@ public class DiskScript : MonoBehaviour
             }
             else if (followFinger && t.fingerId == fingerId && t.phase == TouchPhase.Moved)
             {
-                if (!diskIsSelected && selectOnMove)
+                if (!diskIsSelected && SelectOnMove)
                 {
                     SelectDisk();
                 }
                 transform.position = ConvertToWorldPosition(t.position) - touchOffset;
+                if (AnimEditEventSystem.Instance != null)
+                {
+                    AnimEditEventSystem.Instance.DiskPositionChange(this);
+                }
             }
             else if (followFinger && t.fingerId == fingerId && t.phase == TouchPhase.Ended)
             {
@@ -89,13 +95,13 @@ public class DiskScript : MonoBehaviour
 
     public void SelectDisk()
     {
-        if (selectable)
+        if (Selectable)
         {
             diskSelectionMarker.SetActive(true);
             diskIsSelected = true;
 
-            positionAtSelection = transform.position;
-            selectedDisks.Add(this);
+            PositionAtSelection = transform.position;
+            SelectedDisks.Add(this);
         }
     }
 
@@ -104,7 +110,7 @@ public class DiskScript : MonoBehaviour
         diskSelectionMarker.SetActive(false);
         diskIsSelected = false;
 
-        selectedDisks.Remove(this);
+        SelectedDisks.Remove(this);
     }
 
     private Vector3 ConvertToWorldPosition(Vector2 pos)

@@ -29,19 +29,14 @@ public class TimelineUI : MonoBehaviour
         }
         foreach (Movement move in Timeline.moves)
         {
-            GameObject newTimelineItem = Instantiate(timelineItem, timelineItemHolder.transform);
+            if (move.GetType() != typeof(DisksState))
+            { 
+                GameObject newTimelineItem = Instantiate(timelineItem, timelineItemHolder.transform);
 
-            string animationName = "undefined";
-            switch (move.GetType().Name)
-            {
-                case "LinearMovement": 
-                    animationName = "Mozgás";
-                    break;
-                default:
-                    break;
+                string animationName = move.movementName;
+
+                newTimelineItem.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = animationName;
             }
-
-            newTimelineItem.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = animationName;
         }
     }
 }

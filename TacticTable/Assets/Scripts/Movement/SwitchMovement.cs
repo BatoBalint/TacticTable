@@ -1,52 +1,57 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SwitchMovement : Movement
 {
-    [SerializeField]
-    private GameObject otherDisk;
-    [SerializeField]
-    private Vector3 otherStartPos;
-    [SerializeField]
-    private Vector3 otherEndPos;
+    private GameObject disk;
+    private Vector3 startPos = Vector3.zero;
+    private Vector3 endPos = Vector3.zero;
 
-    public SwitchMovement(GameObject disk, GameObject otherDisk, Vector3 startPos, Vector3 endPos, Vector3 otherStartPos, Vector3 otherEndPos)
-        : base(disk, startPos, endPos)
+    private GameObject otherDisk;
+    private Vector3 otherStartPos;
+    private Vector3 otherEndPos;
+    [SerializeField]
+    private float arc = 1f;
+
+    public SwitchMovement(GameObject disk, GameObject otherDisk, Vector3 diskPos, Vector3 otherDiskPos)
     {
+        this.disk = disk;
+        this.startPos = diskPos;
+        this.endPos = otherDiskPos;
+
         this.otherDisk = otherDisk;
-        this.otherStartPos = otherStartPos;
-        this.otherEndPos = otherEndPos;
+        this.otherStartPos = otherDiskPos;
+        this.otherEndPos = diskPos;
+
+        movementName = "Helycsere";
+
+        arc = CalculateArc();
     }
 
-    public override void Animate(float time)
+    private float CalculateArc()
+    {
+        float distance = Vector3.Distance(startPos, otherStartPos);
+        return Mathf.Pow(distance - 1.3f, 1.39f);
+    }
+
+    public override bool Animate(float time)
     {
         time = Mathf.Clamp01(time);
 
-        Vector3 newPosition = Vector3.Lerp(startPos, endPos, time);
-        //Debug.Log("NEWPos: " + newPosition);
-        Vector3 newOtherPosition = Vector3.Lerp(otherStartPos, otherEndPos, time);
+        var centerPivot = (startPos + endPos) * 0.5f;
+        var centerPivotfel = (otherStartPos + otherEndPos) * 0.5f;
 
-        
-        float distance = Vector3.Distance(newPosition, newOtherPosition);
-        //Debug.Log(distance);
+        centerPivot -= new Vector3(0, -1 * arc);
+        centerPivotfel -= new Vector3(0, 1 * arc);
 
-        
+        var startRelativeCenter = startPos - centerPivot;
+        var endRelativeCenter = endPos - centerPivot;
+        var startRelativeCenterfel = otherStartPos - centerPivotfel;
+        var endRelativeCenterfel = otherEndPos - centerPivotfel;
 
+        otherDisk.transform.position = Vector3.Slerp(startRelativeCenterfel, endRelativeCenterfel, time) + centerPivotfel;
+        disk.transform.position = Vector3.Slerp(startRelativeCenter, endRelativeCenter, time) + centerPivot;
 
-        if (distance < 1.5f)
-        {
-            return;
-            /*float x = Mathf.Cos(time * 10);
-            float y = Mathf.Sin(time * 10);
-
-
-            disk.transform.position = new Vector3(x, y, 0);
-            otherDisk.transform.position = new Vector3(x, y, 0);
-*/
-        }
-        else
-        {
-            disk.transform.position = newPosition;
-            otherDisk.transform.position = newOtherPosition;
-        }
+        return false;
     }
 }

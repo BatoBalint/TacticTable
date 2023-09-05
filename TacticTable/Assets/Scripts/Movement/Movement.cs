@@ -2,19 +2,9 @@ using UnityEngine;
 
 public abstract class Movement
 {
-   [SerializeField]
-    protected GameObject disk;
-    [SerializeField]
-    protected Vector3 startPos = Vector3.zero;
-    [SerializeField]
-    protected Vector3 endPos = Vector3.zero;
+    public string movementName = "undefined";
 
-    public Movement(GameObject disk, Vector3 startPos, Vector3 endPos)
-    {
-        this.disk = disk;
-        this.startPos = startPos;
-        this.endPos = endPos;
-    }
-
-    public abstract void Animate(float time);
+    // returns true if the Animation is finished
+    // more freedom in future Movements
+    public abstract bool Animate(float time);
 }
