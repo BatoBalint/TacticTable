@@ -7,70 +7,113 @@ using System.Text;
 using UnityEngine;
 
 public class DiskScript : MonoBehaviour
-{ 
+{
+    public static List<DiskScript> SelectedDisks = new List<DiskScript>();
+    public static bool SelectOnMove = false;
+
+    public bool Selectable = true;
+    public bool IsBall = false;
+    public bool IsBlue = false;
+    public Vector3 PositionAtSelection = Vector3.zero;
+    [SerializeField]
+    private GameObject diskSelectionMarker;
+    private CircleCollider2D circleCollider;
+
+    private bool diskIsSelected = false;
     private bool followFinger = false;
-    private int touchId = -1;
-    private Vector3 touchOffset = Vector2.zero;
+    private int fingerId = -1;
+    private float touchStart = 0;
+    private Vector3 touchOffset;
 
-    private Vector3 originalScale;
-    [SerializeField]
-    private float scaleGrowthModifier = 1.1f;
-    [SerializeField]
-    private bool growWhenGrabbed = false;
-
-    void Start()
+    public void Awake()
     {
-        originalScale = transform.localScale;
+        circleCollider = transform.GetComponent<CircleCollider2D>();
     }
 
-    void Update()
+    public void Update()
     {
-        MoveToTouch();
-    }
-
-    // Moves the disk to the touch
-    private void MoveToTouch()
-    {
-        if (followFinger)
+        int i = 0;
+        while (i < Input.touchCount)
         {
-            if (Input.touchCount == 0)
+            Touch t = Input.GetTouch(i);
+
+            if (circleCollider.bounds.Contains(ConvertToWorldPosition(t.position)) && t.phase == TouchPhase.Began)
             {
-                DiskReleased();
-                return;
+                followFinger = true;
+                fingerId = t.fingerId;
+                touchStart = Time.time;
+                touchOffset = ConvertToWorldPosition(t.position) - transform.position;
+            }
+            else if (followFinger && t.fingerId == fingerId && t.phase == TouchPhase.Moved)
+            {
+                if (!diskIsSelected && SelectOnMove)
+                {
+                    SelectDisk();
+                }
+                transform.position = ConvertToWorldPosition(t.position) - touchOffset;
+                if (AnimEditEventSystem.Instance != null)
+                {
+                    AnimEditEventSystem.Instance.DiskPositionChange(this);
+                }
+            }
+            else if (followFinger && t.fingerId == fingerId && t.phase == TouchPhase.Ended)
+            {
+                if (Time.time - touchStart < 0.3) TouchTap();
+                followFinger = false;
             }
 
-            int i = 0;
-            while (i < Input.touchCount && Input.touches[i].fingerId != touchId) ++i;
-
-            transform.position = GetWorldPos(Input.touches[i].position) - touchOffset;
+            ++i;
         }
     }
 
-    // Sets the disk to follow the given touch
-    public void DiskGrabbed(int touchId)
+    private void TouchTap()
     {
-        this.touchId = touchId;
-        touchOffset = GetWorldPos(Input.touches[touchId].position) - transform.position;
-        followFinger = true;
-
-        if (growWhenGrabbed) transform.localScale *= scaleGrowthModifier;
+        ToggleDiskSelection();
     }
 
-    // Releases the touch and sets things back to the original values
-    public void DiskReleased()
+    public void TurnOffCollision()
     {
-        touchId = -1;
-        followFinger = false;
-
-        transform.localScale = originalScale;
+        circleCollider.isTrigger = true;
     }
 
-    public CircleCollider2D GetCollider()
-    {
-        return transform.GetComponent<CircleCollider2D>();
+    public void TurnOnCollisoin()
+    { 
+        circleCollider.isTrigger = false;
     }
 
-    private Vector3 GetWorldPos(Vector2 pos)
+    private void ToggleDiskSelection()
+    {
+        if (diskIsSelected)
+        {
+            UnselectDisk();
+        }
+        else
+        {
+            SelectDisk();
+        }
+    }
+
+    public void SelectDisk()
+    {
+        if (Selectable)
+        {
+            diskSelectionMarker.SetActive(true);
+            diskIsSelected = true;
+
+            PositionAtSelection = transform.position;
+            SelectedDisks.Add(this);
+        }
+    }
+
+    public void UnselectDisk()
+    {
+        diskSelectionMarker.SetActive(false);
+        diskIsSelected = false;
+
+        SelectedDisks.Remove(this);
+    }
+
+    private Vector3 ConvertToWorldPosition(Vector2 pos)
     {
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(pos);
         worldPos.z = 0;
