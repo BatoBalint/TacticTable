@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class Timeline : MonoBehaviour
 {
+
     public bool timelinePlays = false;
     public float timeMultiplier = 1.0f;
     public float time = 0.0f;
     private float animationTime = 0.0f;
     public static List<Movement> moves = new List<Movement>();
+    public static List<DisksState> disksStates = new List<DisksState>();
     public int index = 0;
     private int _partialAnimationEndIndex = 0;
 
@@ -103,6 +105,8 @@ public class Timeline : MonoBehaviour
 
     public void Play()
     {
+        if (index == 0) disksStates[0].ResetDisksToSavedPosition();
+
         timelinePlays = true;
         if (timeMultiplier == 0)
             timeMultiplier = 1;
@@ -124,9 +128,21 @@ public class Timeline : MonoBehaviour
         }
     }
 
-    public static void Add(Movement move)
+    public static void Add(Movement move, Transform diskHolder)
     {
         moves.Add(move);
+        DisksState disksState = new DisksState(diskHolder);
+        foreach (var disk in move.GetEndPositions())
+        {
+            disksState.SetDiskPosition(disk.Key, disk.Value);
+        }
+        disksStates.Add(disksState);
+        Debug.Log(disksStates.Count);
+    }
+
+    public static void SaveDiskPositions(Transform diskHolder)
+    {
+        disksStates.Add(new DisksState(diskHolder));
     }
 
     public static void ClearMoves()
@@ -143,6 +159,7 @@ public class Timeline : MonoBehaviour
             return;
 
         moves.RemoveAt(removeIndex);
+        disksStates.RemoveAt(removeIndex + 1);
     }
 
     public static void Insert(int moveIndex, int newMoveIndex)

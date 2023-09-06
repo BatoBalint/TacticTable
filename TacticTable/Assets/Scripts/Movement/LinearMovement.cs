@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class LinearMovement : Movement
@@ -26,5 +27,12 @@ public class LinearMovement : Movement
         disk.transform.position = newPosition;
 
         return false;
+    }
+
+    public override Dictionary<DiskScript, Vector3> GetEndPositions()
+    {
+        Dictionary<DiskScript, Vector3> endPositions = new Dictionary<DiskScript, Vector3>();
+        endPositions.Add(disk.GetComponent<DiskScript>(), endPos);
+        return endPositions;
     }
 }

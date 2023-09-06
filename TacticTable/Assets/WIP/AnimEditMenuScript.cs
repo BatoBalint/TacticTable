@@ -31,7 +31,7 @@ public class AnimEditMenuScript : MonoBehaviour
 
     private void Start()
     {
-        Timeline.Add(new DisksState(_diskHolder));
+        Timeline.SaveDiskPositions(_diskHolder);
     }
 
     private void OnDestroy()
@@ -114,12 +114,11 @@ public class AnimEditMenuScript : MonoBehaviour
     // Called every time a disk is moved by the user
     private void DiskPositionChange(DiskScript disk)
     {
-        if (Timeline.moves.Count == 1 && Timeline.moves[0].GetType() == typeof(DisksState) && _animationMode == AnimationMode.None)
+        if (Timeline.disksStates.Count == 1 && _animationMode == AnimationMode.None)
         {
-            DisksState ds = (DisksState)Timeline.moves[0];
-            ds.SetDiskPosition(disk, disk.transform.position);
+            Timeline.disksStates[0].SetDiskPosition(disk, disk.transform.position);
         }
-        else if (_autoMoveOnDiskMove && Timeline.moves.Count > 1 && _animationMode == AnimationMode.None)
+        else if (_autoMoveOnDiskMove && Timeline.moves.Count > 0 && _animationMode == AnimationMode.None)
         {
             SetMode(AnimationMode.Move);
         }
@@ -133,7 +132,7 @@ public class AnimEditMenuScript : MonoBehaviour
             if (DiskScript.SelectedDisks.Count > 0)
             {
                 GameObject disk = DiskScript.SelectedDisks[0].gameObject;
-                Timeline.Add(new LinearMovement(disk, disk.GetComponent<DiskScript>().PositionAtSelection, disk.transform.position));
+                Timeline.Add(new LinearMovement(disk, disk.GetComponent<DiskScript>().PositionAtSelection, disk.transform.position), _diskHolder);
                 _timelineUIref.UpdateTimeline();
 
                 ResetAfterAddingMovement();
@@ -152,7 +151,7 @@ public class AnimEditMenuScript : MonoBehaviour
 
                 SwitchMovement swMovement = new SwitchMovement(disk1, disk2, disk1Script.PositionAtSelection, disk2Script.PositionAtSelection);
 
-                Timeline.Add(swMovement);
+                Timeline.Add(swMovement, _diskHolder);
                 _timelineUIref.UpdateTimeline();
 
                 _timeline.SetTimeSpeed(4);
@@ -161,6 +160,7 @@ public class AnimEditMenuScript : MonoBehaviour
                 ResetAfterAddingMovement();
             }
         }
+        Debug.Log("timeline diskStates count: " + Timeline.disksStates.Count);
     }
 
     private void ResetAfterAddingMovement()

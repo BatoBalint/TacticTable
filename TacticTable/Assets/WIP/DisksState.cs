@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class DisksState : Movement
+public class DisksState
 {
     private List<DiskScript> _disks;
     private Dictionary<DiskScript, Vector3> _positions;
@@ -64,13 +64,11 @@ public class DisksState : Movement
         _positions[disk] = pos;
     }
 
-    public override bool Animate(float time)
+    public void ResetDisksToSavedPosition()
     {
         foreach (var pos in _positions)
         {
             pos.Key.transform.position = pos.Value;
         }
-
-        return true;
     }
 }

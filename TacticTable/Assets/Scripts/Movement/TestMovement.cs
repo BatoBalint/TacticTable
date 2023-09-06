@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TestMovement : Movement
@@ -12,5 +13,10 @@ public class TestMovement : Movement
         Debug.Log("Animation progress: " + Mathf.RoundToInt(percentage * 100) + "%");
 
         return false;
+    }
+
+    public override Dictionary<DiskScript, Vector3> GetEndPositions()
+    {
+        return new Dictionary<DiskScript, Vector3>();
     }
 }

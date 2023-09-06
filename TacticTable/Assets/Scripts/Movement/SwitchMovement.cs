@@ -54,4 +54,12 @@ public class SwitchMovement : Movement
 
         return false;
     }
+
+    public override Dictionary<DiskScript, Vector3> GetEndPositions()
+    {
+        Dictionary<DiskScript, Vector3> endPositions = new Dictionary<DiskScript, Vector3>();
+        endPositions.Add(disk.GetComponent<DiskScript>(), endPos);
+        endPositions.Add(otherDisk.GetComponent<DiskScript>(), otherEndPos);
+        return endPositions;
+    }
 }

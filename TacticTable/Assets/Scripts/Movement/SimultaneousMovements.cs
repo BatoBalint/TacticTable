@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SimultaneousMovements : Movement
@@ -35,4 +36,13 @@ public class SimultaneousMovements : Movement
         return false;
     }
 
+    public override Dictionary<DiskScript, Vector3> GetEndPositions()
+    {
+        Dictionary<DiskScript, Vector3> endPositions = new Dictionary<DiskScript, Vector3>();
+        foreach (var move in movements)
+        {
+            endPositions.AddRange(move.GetEndPositions());
+        }
+        return endPositions;
+    }
 }
