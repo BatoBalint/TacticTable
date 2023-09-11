@@ -9,8 +9,8 @@ public class Timeline : MonoBehaviour
     public float timeMultiplier = 1.0f;
     public float time = 0.0f;
     private float animationTime = 0.0f;
-    public static List<Movement> moves = new List<Movement>();
-    public static List<DisksState> disksStates = new List<DisksState>();
+    public List<Movement> moves = new List<Movement>();
+    public List<DisksState> disksStates = new List<DisksState>();
     public int index = 0;
     private int _partialAnimationEndIndex = 0;
 
@@ -128,7 +128,7 @@ public class Timeline : MonoBehaviour
         }
     }
 
-    public static void Add(Movement move, Transform diskHolder)
+    public void Add(Movement move, Transform diskHolder)
     {
         moves.Add(move);
         DisksState disksState = new DisksState(diskHolder);
@@ -137,15 +137,14 @@ public class Timeline : MonoBehaviour
             disksState.SetDiskPosition(disk.Key, disk.Value);
         }
         disksStates.Add(disksState);
-        Debug.Log(disksStates.Count);
     }
 
-    public static void SaveDiskPositions(Transform diskHolder)
+    public void SaveDiskPositions(Transform diskHolder)
     {
         disksStates.Add(new DisksState(diskHolder));
     }
 
-    public static void ClearMoves()
+    public void ClearMoves()
     {
         while (moves.Count > 1)
         {
@@ -153,7 +152,7 @@ public class Timeline : MonoBehaviour
         }
     }
 
-    public static void RemoveAt(int removeIndex)
+    public void RemoveAt(int removeIndex)
     {
         if (removeIndex < 1 || removeIndex > moves.Count - 1)
             return;
@@ -162,7 +161,7 @@ public class Timeline : MonoBehaviour
         disksStates.RemoveAt(removeIndex + 1);
     }
 
-    public static void Insert(int moveIndex, int newMoveIndex)
+    public void Insert(int moveIndex, int newMoveIndex)
     {
         if (moveIndex == newMoveIndex || moveIndex < 0 || moveIndex >= moves.Count || newMoveIndex < 0 || newMoveIndex > moves.Count)
             return;

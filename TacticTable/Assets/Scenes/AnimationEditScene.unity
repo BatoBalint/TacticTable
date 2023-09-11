@@ -3733,8 +3733,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd3f5afe5fd4c24296a2be2163ae0c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timelineItem: {fileID: 3360051473295244072, guid: d57f187015e3299439d12c8e7ef6792d, type: 3}
-  timelineItemHolder: {fileID: 2060386727}
+  _timelineItem: {fileID: 3360051473295244072, guid: d57f187015e3299439d12c8e7ef6792d, type: 3}
+  _timelineItemHolder: {fileID: 2060386727}
 --- !u!114 &1544422458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4907,6 +4907,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74a42f481c56ac4ab89eff30fc75c39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _timeline: {fileID: 1544422458}
 --- !u!4 &1781448105
 Transform:
   m_ObjectHideFlags: 0
