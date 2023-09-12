@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Plastic.Newtonsoft.Json;
+using Newtonsoft.Json;
 
 public class TestMenuScript : MonoBehaviour
 {
@@ -33,7 +33,7 @@ public class TestMenuScript : MonoBehaviour
 
     public void Func1()
     {
-        /*DiskStruct diskStruct = new DiskStruct();
+        DiskStruct diskStruct = new DiskStruct();
         diskStruct.IsBlue = true;
         diskStruct.Pos = Vector3.up;
 
@@ -43,13 +43,15 @@ public class TestMenuScript : MonoBehaviour
         moveStruct.Positions = new List<Vector3>();
         moveStruct.Positions.Add(Vector3.up);
         moveStruct.Positions.Add(Vector3.right);
-        moveStruct.MoveType = "LinearMovement";*/
+        moveStruct.MoveType = "LinearMovement";
 
         Dictionary<string, dynamic> dir = new Dictionary<string, dynamic>();
         dir.Add("alma", 3);
         dir.Add("disks", new List<int>() { 1, 2, 3 });
 
-        string json = JsonConvert.SerializeObject(dir);
+        string json = JsonConvert.SerializeObject(moveStruct);
+
+        //string json = JsonConvert.SerializeObject(dir);
 
         Debug.Log(json);
     }
