@@ -1,31 +1,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
+using TMPro;
+using System.IO;
+using Unity.VisualScripting;
+using System;
 
 public class TestMenuScript : MonoBehaviour
 {
-    struct MovementStruct
-    {
-        public string MoveType;
-        public List<DiskStruct> Disks;
-        public List<Vector3> Positions;
-    }
-
-    struct DiskStruct
-    {
-        public bool IsBlue;
-        public Vector3 Pos;
-    }
-
     [SerializeField] private DiskScript _disk;
+    [SerializeField] private TextMeshProUGUI _debugText;
 
-    // Start is called before the first frame update
+    private string _appPath;
+    private string _testDirPath;
+
     void Start()
     {
-        
+        _appPath = Application.persistentDataPath;
+        _testDirPath = _appPath + Path.DirectorySeparatorChar + "Tests";
     }
 
-    // Update is called once per frame
     void Update()
     {
         
@@ -33,36 +27,56 @@ public class TestMenuScript : MonoBehaviour
 
     public void Func1()
     {
-        DiskStruct diskStruct = new DiskStruct();
-        diskStruct.IsBlue = true;
-        diskStruct.Pos = Vector3.up;
-
-        MovementStruct moveStruct = new MovementStruct();
-        moveStruct.Disks = new List<DiskStruct>();
-        moveStruct.Disks.Add(diskStruct);
-        moveStruct.Positions = new List<Vector3>();
-        moveStruct.Positions.Add(Vector3.up);
-        moveStruct.Positions.Add(Vector3.right);
-        moveStruct.MoveType = "LinearMovement";
-
-        Dictionary<string, dynamic> dir = new Dictionary<string, dynamic>();
-        dir.Add("alma", 3);
-        dir.Add("disks", new List<int>() { 1, 2, 3 });
-
-        string json = JsonConvert.SerializeObject(moveStruct);
-
-        //string json = JsonConvert.SerializeObject(dir);
-
-        Debug.Log(json);
+        string fileName = "testFile.txt";
+        try
+        {
+            StreamWriter sw = new StreamWriter(_testDirPath + Path.DirectorySeparatorChar + fileName, false);
+            sw.WriteLine("This is a test file.");
+            sw.WriteLine("Lorem ipsum I guess...");
+            sw.WriteLine(DateTime.Now.ToString());
+            sw.Close();
+            _debugText.text = "Sikeres fajlba iras.";
+        }
+        catch (System.Exception)
+        {
+            _debugText.text = "Nem sikerult megnyitni a fajlt.";
+        }
     }
 
     public void Func2()
     {
-        Debug.Log("Func2");
+        if (!Directory.Exists(_testDirPath))
+        { 
+            Directory.CreateDirectory(_testDirPath);
+        }
+
+        string[] dirs = Directory.GetDirectories(_appPath);
+        string[] files = Directory.GetFiles(_testDirPath);
+
+        string msg = "Directories:\n";
+        foreach (var dir in dirs)
+        {
+            msg += "\t" + dir + "\n";
+        }
+        msg += "Files in test directory:\n";
+        foreach (var file in files)
+        {
+            msg += "\t" + file + "\n";
+        }
+        _debugText.text = msg;
     }
 
     public void Func3()
     {
-        Debug.Log("Func3");
+        string filePaht = _testDirPath + Path.DirectorySeparatorChar + "testFile.txt";
+        if (File.Exists(filePaht))
+        {
+            string fileAsString = File.ReadAllText(filePaht);
+            _debugText.text = fileAsString;
+        }
+        else
+        {
+            _debugText.text = "Nem letezik ilyen fajl. " + filePaht;
+        }
     }
 }
