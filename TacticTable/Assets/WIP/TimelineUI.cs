@@ -6,16 +6,16 @@ using UnityEngine;
 
 public class TimelineUI : MonoBehaviour
 {
-    private Timeline timeline;
+    private Timeline _timeline;
     [SerializeField]
-    private GameObject timelineItem;
+    private GameObject _timelineItem;
     [SerializeField]
-    private GameObject timelineItemHolder;
+    private GameObject _timelineItemHolder;
 
     private void Awake()
     {
-        timeline = GetComponent<Timeline>();
-        if (timeline == null)
+        _timeline = GetComponent<Timeline>();
+        if (_timeline == null)
         {
             Debug.Log("Couldnt find component");
         }
@@ -23,15 +23,15 @@ public class TimelineUI : MonoBehaviour
 
     public void UpdateTimeline()
     {
-        foreach (Transform t in timelineItemHolder.transform) 
+        foreach (Transform t in _timelineItemHolder.transform) 
         {
             Destroy(t.gameObject);
         }
-        foreach (Movement move in Timeline.moves)
+        foreach (Movement move in _timeline.moves)
         {
             if (move.GetType() != typeof(DisksState))
             { 
-                GameObject newTimelineItem = Instantiate(timelineItem, timelineItemHolder.transform);
+                GameObject newTimelineItem = Instantiate(_timelineItem, _timelineItemHolder.transform);
 
                 string animationName = move.movementName;
 
