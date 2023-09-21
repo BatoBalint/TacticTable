@@ -18,7 +18,6 @@ public class PositionsContainer : MonoBehaviour
         for (int i = 0; i < transform.childCount; i++)
         {
             targetPositions.Add(new Vector3(transform.GetChild(i).position.x, transform.GetChild(i).position.y, 0f));
-
         }
     }
 
@@ -49,8 +48,5 @@ public class PositionsContainer : MonoBehaviour
             
             yield return null;
         }
-
-        
-
     }
 }
