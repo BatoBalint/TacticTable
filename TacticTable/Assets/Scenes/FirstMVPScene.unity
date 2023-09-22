@@ -6209,7 +6209,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1079467786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6945,7 +6945,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -200, y: 0}
+  m_AnchoredPosition: {x: -199.99994, y: 0}
   m_SizeDelta: {x: -400, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1181308036
@@ -9071,29 +9071,13 @@ PrefabInstance:
       propertyPath: korongok.Array.data[5]
       value: 
       objectReference: {fileID: 134345618}
-    - target: {fileID: 1623175719844791960, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1623175719961118204, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1623175719983601297, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175719983601298, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -1.8550005
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175719983601298, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175719983601298, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1623175720059663164, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: m_RootOrder
@@ -9105,7 +9089,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1623175720059663164, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1623175720059663164, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: m_LocalPosition.z
@@ -9143,18 +9127,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Positions
       objectReference: {fileID: 0}
-    - target: {fileID: 1623175720122844466, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175720122844466, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175720122844466, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1623175720122844467, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: korongok.Array.data[0]
       value: 
@@ -9179,41 +9151,17 @@ PrefabInstance:
       propertyPath: korongok.Array.data[5]
       value: 
       objectReference: {fileID: 134345618}
-    - target: {fileID: 1623175720186219168, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 3.2750006
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175720186219168, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175720186219168, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1623175720186219183, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1623175720253876620, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1623175720444544247, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175720444544264, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -1.8550005
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175720444544264, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175720444544264, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1623175720570779795, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: korongok.Array.data[0]
@@ -9241,51 +9189,15 @@ PrefabInstance:
       objectReference: {fileID: 864287528}
     - target: {fileID: 1623175720634270247, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175720634270264, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 3.9750004
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175720634270264, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175720634270264, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175720650048890, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175720650048890, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175720650048890, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1623175720864928450, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175720864928451, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -7.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175720864928451, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175720864928451, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1623175720967988213, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1623175721112471804, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: korongok.Array.data[0]
@@ -9313,31 +9225,19 @@ PrefabInstance:
       objectReference: {fileID: 864287528}
     - target: {fileID: 1623175721204162927, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1623175721320966852, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1623175721428478388, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175721428478389, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -6.825
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175721428478389, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1623175721428478389, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1623175721439387722, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2901176226183885219, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: korongok.Array.data[0]
@@ -10545,7 +10445,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &6082543127744777592
 GameObject:
   m_ObjectHideFlags: 0
@@ -10561,7 +10461,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6082543127744777593
 Transform:
   m_ObjectHideFlags: 0
