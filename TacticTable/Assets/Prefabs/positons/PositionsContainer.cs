@@ -13,6 +13,11 @@ public class PositionsContainer : MonoBehaviour
     private void Start()
     {
         targetPositions = new List<Vector3>();
+    }
+
+    private void SetTargetPositions()
+    {
+        targetPositions.Clear();
 
         // Populate the targetPositions with child GameObject positions
         for (int i = 0; i < transform.childCount; i++)
@@ -23,6 +28,7 @@ public class PositionsContainer : MonoBehaviour
 
     public void StartSlideRings()
     {
+        SetTargetPositions();
         StartCoroutine(SlideRings());
     }
 
