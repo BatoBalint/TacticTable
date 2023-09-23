@@ -8,18 +8,23 @@ using UnityEngine;
 
 public class DiskScript : MonoBehaviour
 {
+    // Global variables
     public static List<DiskScript> SelectedDisks = new List<DiskScript>();
     public static bool SelectOnMove = false;
 
     public bool Selectable = true;
     public bool IsBall = false;
     public bool IsBlue = false;
-    public Vector3 PositionAtSelection = Vector3.zero;
-    [SerializeField]
-    private GameObject diskSelectionMarker;
+
     private CircleCollider2D circleCollider;
 
+    // Selection related variables
+    [SerializeField]
+    private GameObject diskSelectionMarker;
+    public Vector3 PositionAtSelection { get; private set; }
     private bool diskIsSelected = false;
+
+    // Movement related variables
     private bool followFinger = false;
     private int fingerId = -1;
     private float touchStart = 0;
@@ -28,6 +33,7 @@ public class DiskScript : MonoBehaviour
     public void Awake()
     {
         circleCollider = transform.GetComponent<CircleCollider2D>();
+        PositionAtSelection = Vector3.zero;
     }
 
     public void Update()
