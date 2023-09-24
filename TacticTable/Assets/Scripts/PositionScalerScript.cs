@@ -34,16 +34,13 @@ public class PositionScalerScript : MonoBehaviour
         for (int i = 0; i < redPositions.childCount && i < _redDisks.childCount; i++)
         {
             _redDisks.GetChild(i).position = redPositions.GetChild(i).position;
+            _blueDisks.GetChild(i).position = bluePositions.GetChild(i).position;
         }
 
         if (bluePositions.childCount < 6 || _blueDisks.childCount < 6)
             return;
 
-        // It's hardcoded but currently I don't want to rewrite everything else
-        for (int i = 0; i < 6; i++)
-        {
-            _blueDisks.GetChild(5 - i).position = bluePositions.GetChild(i).position;
-        }
+
     }
 
     private void AdditionalDisksToStartingPosition()
