@@ -15,7 +15,7 @@ public class PositionScalerScript : MonoBehaviour
     {
         Transform t = transform;
 
-        float growthScale = Camera.main.pixelWidth / 1920f;
+        float growthScale = Camera.main.aspect / (1920f/1080);
         t.position = new Vector3(transform.position.x * growthScale, transform.position.y, transform.position.z);
         t.localScale = new Vector3(growthScale, 1, 1);
 
