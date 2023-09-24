@@ -27,15 +27,12 @@ public class DrawManager : MonoBehaviour
         _lines = new List<LineScript>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         Vector2 mousePos = _cam.ScreenToWorldPoint(Input.mousePosition);
-        //Vector2 mousePos2 = _cam.ScreenToWorldPoint(Input.touch);
 
         if (Input.GetMouseButtonDown(0))
         {
-            //Debug.Log(mousePos + ", " + _linePrefab);
             _currentLine = Instantiate(_linePrefab.gameObject, mousePos, Quaternion.identity,transform).GetComponent<LineScript>();
             _lines.Add(_currentLine);
         }
@@ -51,7 +48,6 @@ public class DrawManager : MonoBehaviour
     
     public void DeletLast()
     {
-        //Debug.Log(_lines.Count + ", ");
         int listLength = _lines.Count;
         LineScript delet = _lines[listLength-1];
         
@@ -69,13 +65,11 @@ public class DrawManager : MonoBehaviour
 
     public void DeleteAll()
     {
-        //Debug.Log(_lines.Count - 1 + ", ");
         int listLength = _lines.Count-1;
         LineScript delet;
         for (int i = listLength; i >= 0; i--)
         {
             delet = _lines[i];
-            //Debug.Log(i + ", ");
             if (_lines[i] != null)
             {
                 Destroy(_lines[i].gameObject);
