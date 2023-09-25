@@ -12,6 +12,7 @@ public class TestMenuScript : MonoBehaviour
     [SerializeField] private Transform _blueDiskPrefab;
     [SerializeField] private Transform _redDiskPrefab;
     [SerializeField] private TextMeshProUGUI _debugText;
+    [SerializeField] private Timeline _timeline;
 
     private Transform _diskHolder;
 
@@ -26,11 +27,6 @@ public class TestMenuScript : MonoBehaviour
         _testDirPath = _appPath + Path.DirectorySeparatorChar + "Tests";
         _diskHolder = _disk.transform.parent;
         _storageManager = new StorageManager();
-    }
-
-    void Update()
-    {
-        
     }
 
     public void Func1()
@@ -150,6 +146,22 @@ public class TestMenuScript : MonoBehaviour
 
     public void Func5()
     {
+        List<Dictionary<string, dynamic>> dicList = new List<Dictionary<string, dynamic>>();
 
+        Dictionary<string, dynamic> dic;
+        for (int i = 0; i < 5; i++)
+        {
+            dic = new Dictionary<string, dynamic>();
+            dic.Add("index", i);
+            dic.Add("funfact", "You cant run from me");
+            dicList.Add(dic);
+        }
+
+        Dictionary<string, dynamic> dic2 = new Dictionary<string, dynamic>();
+        dic2.Add("Name", "Jhon");
+        dic2.Add("Age", 19);
+        dic2.Add("Hobbies", dicList);
+
+        _debugText.text = JsonConvert.SerializeObject(dic2, Formatting.Indented);
     }
 }

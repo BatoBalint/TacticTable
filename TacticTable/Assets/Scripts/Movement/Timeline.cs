@@ -41,21 +41,21 @@ public class Timeline : MonoBehaviour
 
         IncreaseTime();
 
-        bool animationEnded = false;
+        bool timelineEnded = false;
         if (time < 0f)
         {
             time = 0;
-            animationEnded = true;
+            timelineEnded = true;
         }
         else if (time > 1f)
         {
             time = 1;
-            animationEnded = true;
+            timelineEnded = true;
         }
 
         bool animationFinished = moves[index].Animate(_animationTime);
 
-        if (animationEnded || animationFinished)
+        if (timelineEnded || animationFinished)
             NextAnimation();
     }
 
@@ -145,9 +145,9 @@ public class Timeline : MonoBehaviour
 
     public void ClearMoves()
     {
-        while (moves.Count > 1)
+        while (moves.Count > 0)
         {
-            moves.RemoveAt(1);
+            moves.RemoveAt(0);
         }
     }
 
@@ -172,5 +172,13 @@ public class Timeline : MonoBehaviour
             newMoveIndex--;
 
         moves.Insert(newMoveIndex, move);
+    }
+
+    public Dictionary<string, dynamic> ToJSON()
+    {
+        Dictionary<string, dynamic> jsonDictionary = new Dictionary<string, dynamic>();
+        
+
+        return jsonDictionary;
     }
 }

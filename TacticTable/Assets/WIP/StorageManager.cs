@@ -11,6 +11,8 @@ public class StorageManager
     public string AppDirectoryPath { get; private set; }
     private string _savedAnimationsPath = "";
 
+
+
     // Test
     private string _testDirPath = "";
 
@@ -20,6 +22,7 @@ public class StorageManager
 
         AppDirectoryPath = Application.persistentDataPath;
         _savedAnimationsPath = AppDirectoryPath + _seperator + "SavedAnimations";
+
 
 
         //Test

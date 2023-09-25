@@ -15,6 +15,7 @@ public class DiskScript : MonoBehaviour
     public bool Selectable = true;
     public bool IsBall = false;
     public bool IsBlue = false;
+    public int Id = -1;
 
     private CircleCollider2D _circleCollider;
 
@@ -124,6 +125,19 @@ public class DiskScript : MonoBehaviour
         _diskIsSelected = false;
 
         SelectedDisks.Remove(this);
+    }
+
+    public Dictionary<string, string> ConvertToDictionary()
+    {
+        Dictionary<string, string> dic = new Dictionary<string, string>();
+
+        dic.Add("id", Id.ToString());
+        dic.Add("color", IsBlue ? "blue" : "red");
+        dic.Add("ball", IsBall.ToString());
+        dic.Add("x", transform.position.x.ToString());
+        dic.Add("y", transform.position.y.ToString());
+
+        return dic;
     }
 
     private Vector3 ConvertToWorldPosition(Vector2 pos)
