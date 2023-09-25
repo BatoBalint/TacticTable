@@ -13,6 +13,10 @@ public class TestMenuScript : MonoBehaviour
     [SerializeField] private Transform _redDiskPrefab;
     [SerializeField] private TextMeshProUGUI _debugText;
 
+    private Transform _diskHolder;
+
+    private StorageManager _storageManager;
+
     private string _appPath;
     private string _testDirPath;
 
@@ -20,6 +24,8 @@ public class TestMenuScript : MonoBehaviour
     {
         _appPath = Application.persistentDataPath;
         _testDirPath = _appPath + Path.DirectorySeparatorChar + "Tests";
+        _diskHolder = _disk.transform.parent;
+        _storageManager = new StorageManager();
     }
 
     void Update()
@@ -90,8 +96,8 @@ public class TestMenuScript : MonoBehaviour
             if (!float.TryParse(diskData["y"], out y)) y = 0f;
 
             newDisk.position = new Vector3(x, y, 0);
+            newDisk.parent = _diskHolder;
         }
-
     }
 
     public void Func3()
@@ -124,5 +130,26 @@ public class TestMenuScript : MonoBehaviour
             _debugText.text += "Nem sikerult letrehozni/megnyitni a fajlt: " + fileName;
             _debugText.text += ex.Message;
         }
+    }
+
+    public void Func4()
+    {
+        string[] dirs = _storageManager.ListDirectories("Tests");
+        string[] files = _storageManager.ListFiles("Tests");
+
+        foreach (var item in dirs)
+        {
+            _debugText.text += item + "\n";
+        }
+
+        foreach (var item in files)
+        {
+            _debugText.text += item + "\n";
+        }
+    }
+
+    public void Func5()
+    {
+
     }
 }
