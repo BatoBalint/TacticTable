@@ -1177,6 +1177,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _disk: {fileID: 1678146637}
+  _blueDiskPrefab: {fileID: 7135266769800931114, guid: 9ae5ab46329feca448275e24dd5c1475, type: 3}
+  _redDiskPrefab: {fileID: 5337861194482681075, guid: 67f1316762c57494d8601b9eebf9bd4c, type: 3}
   _debugText: {fileID: 1245904085}
 --- !u!114 &1678146637 stripped
 MonoBehaviour:

@@ -48,7 +48,7 @@ public class PositionScalerScript : MonoBehaviour
 
     private void AdditionalDisksToStartingPosition()
     {
-        // the "magic" numbers are pre tested numbers from the editor (3, 4, offset)
+        // the "magic" numbers are pre tested numbers from the editor (-3f, -4f, offset)
         float offset = 0.7f;
 
         // Subtract 200 because of margin center (400 / 2)
@@ -62,5 +62,15 @@ public class PositionScalerScript : MonoBehaviour
             _blueDisks.GetChild(_blueDisks.childCount - 1).position = new Vector3(calculatedPos.x + offset, -3f, 0);
 
         _ball.position = new Vector3(calculatedPos.x, -4f, 0);
+    }
+
+    // Returns the growth scale or 1 if couldn't find a main camera
+    public static float GetWidthGrowthScale()
+    {
+        Camera mainCamera = Camera.main;
+        if (mainCamera != null)
+            return mainCamera.pixelWidth / 1920f;
+        else
+            return 1f;
     }
 }

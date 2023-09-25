@@ -113,8 +113,7 @@ MonoBehaviour:
   Selectable: 1
   IsBall: 0
   IsBlue: 1
-  PositionAtSelection: {x: 0, y: 0, z: 0}
-  diskSelectionMarker: {fileID: 8770148516670303418}
+  _diskSelectionMarker: {fileID: 8770148516670303418}
 --- !u!1 &5146161640248235126
 GameObject:
   m_ObjectHideFlags: 0

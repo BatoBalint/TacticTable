@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class Timeline : MonoBehaviour
 {
-
     public bool timelinePlays = false;
     public float timeMultiplier = 1.0f;
     public float time = 0.0f;
-    private float animationTime = 0.0f;
+    private float _animationTime = 0.0f;
     public List<Movement> moves = new List<Movement>();
     public List<DisksState> disksStates = new List<DisksState>();
     public int index = 0;
@@ -54,7 +53,7 @@ public class Timeline : MonoBehaviour
             animationEnded = true;
         }
 
-        bool animationFinished = moves[index].Animate(animationTime);
+        bool animationFinished = moves[index].Animate(_animationTime);
 
         if (animationEnded || animationFinished)
             NextAnimation();
@@ -63,7 +62,7 @@ public class Timeline : MonoBehaviour
     private void IncreaseTime()
     {
         time += Time.deltaTime * (timeMultiplier + Math.Abs(0.5f - time));
-        animationTime = AnimationCurve.EaseInOut(0, 0, 1, 1).Evaluate(time);
+        _animationTime = AnimationCurve.EaseInOut(0, 0, 1, 1).Evaluate(time);
     }
 
     private void NextAnimation()

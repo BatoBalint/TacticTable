@@ -9484,6 +9484,14 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1623175720650048890, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1623175720650048890, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1623175720824713512, guid: 158d41093ae2e1a498d79bce4d83de61, type: 3}
       propertyPath: m_Enabled
       value: 0

@@ -16,23 +16,24 @@ public class DiskScript : MonoBehaviour
     public bool IsBall = false;
     public bool IsBlue = false;
 
-    private CircleCollider2D circleCollider;
+    private CircleCollider2D _circleCollider;
 
     // Selection related variables
     [SerializeField]
-    private GameObject diskSelectionMarker;
+    private GameObject _diskSelectionMarker;
     public Vector3 PositionAtSelection { get; private set; }
-    private bool diskIsSelected = false;
+    private bool _diskIsSelected = false;
 
     // Movement related variables
-    private bool followFinger = false;
-    private int fingerId = -1;
-    private float touchStart = 0;
-    private Vector3 touchOffset;
+    private bool _followFinger = false;
+    private int _fingerId = -1;
+    private float _touchStart = 0;      // Stores the time at touch start
+    private Vector3 _touchOffset;
+    private float _moveSinceGrab = 0f;  // distance traveld since grab event
 
     public void Awake()
     {
-        circleCollider = transform.GetComponent<CircleCollider2D>();
+        _circleCollider = transform.GetComponent<CircleCollider2D>();
         PositionAtSelection = Vector3.zero;
     }
 
@@ -42,30 +43,36 @@ public class DiskScript : MonoBehaviour
         while (i < Input.touchCount)
         {
             Touch t = Input.GetTouch(i);
+            Vector3 touchWorldPos = ConvertToWorldPosition(t.position);
 
-            if (circleCollider.bounds.Contains(ConvertToWorldPosition(t.position)) && t.phase == TouchPhase.Began)
+            // Handling touch start
+            if (_circleCollider.bounds.Contains(touchWorldPos) && t.phase == TouchPhase.Began)
             {
-                followFinger = true;
-                fingerId = t.fingerId;
-                touchStart = Time.time;
-                touchOffset = ConvertToWorldPosition(t.position) - transform.position;
+                _followFinger = true;
+                _fingerId = t.fingerId;
+                _touchStart = Time.time;
+                _touchOffset = touchWorldPos - transform.position;
             }
-            else if (followFinger && t.fingerId == fingerId && t.phase == TouchPhase.Moved)
+            // Handling drag
+            else if (_followFinger && t.fingerId == _fingerId && t.phase == TouchPhase.Moved)
             {
-                if (!diskIsSelected && SelectOnMove)
+                if (!_diskIsSelected && SelectOnMove)
                 {
                     SelectDisk();
                 }
-                transform.position = ConvertToWorldPosition(t.position) - touchOffset;
+                _moveSinceGrab += Vector3.Distance(touchWorldPos, transform.position);
+                transform.position = touchWorldPos - _touchOffset;
                 if (AnimEditEventSystem.Instance != null)
                 {
                     AnimEditEventSystem.Instance.DiskPositionChange(this);
                 }
             }
-            else if (followFinger && t.fingerId == fingerId && t.phase == TouchPhase.Ended)
+            // Handling touch release
+            else if (_followFinger && t.fingerId == _fingerId && t.phase == TouchPhase.Ended)
             {
-                if (Time.time - touchStart < 0.3) TouchTap();
-                followFinger = false;
+                if (Time.time - _touchStart < 0.3 && _moveSinceGrab < 0.2f) TouchTap();
+                _followFinger = false;
+                _moveSinceGrab = 0;
             }
 
             ++i;
@@ -79,17 +86,17 @@ public class DiskScript : MonoBehaviour
 
     public void TurnOffCollision()
     {
-        circleCollider.isTrigger = true;
+        _circleCollider.isTrigger = true;
     }
 
     public void TurnOnCollisoin()
     { 
-        circleCollider.isTrigger = false;
+        _circleCollider.isTrigger = false;
     }
 
     private void ToggleDiskSelection()
     {
-        if (diskIsSelected)
+        if (_diskIsSelected)
         {
             UnselectDisk();
         }
@@ -103,8 +110,8 @@ public class DiskScript : MonoBehaviour
     {
         if (Selectable)
         {
-            diskSelectionMarker.SetActive(true);
-            diskIsSelected = true;
+            _diskSelectionMarker.SetActive(true);
+            _diskIsSelected = true;
 
             PositionAtSelection = transform.position;
             SelectedDisks.Add(this);
@@ -113,8 +120,8 @@ public class DiskScript : MonoBehaviour
 
     public void UnselectDisk()
     {
-        diskSelectionMarker.SetActive(false);
-        diskIsSelected = false;
+        _diskSelectionMarker.SetActive(false);
+        _diskIsSelected = false;
 
         SelectedDisks.Remove(this);
     }
