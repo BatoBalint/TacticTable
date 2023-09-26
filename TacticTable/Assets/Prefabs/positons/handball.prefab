@@ -48,6 +48,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28d05f8fffa1c044ea705885baa0ef4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _startingPosition: {fileID: 1623175720650048890}
+  _redDisks: {fileID: 0}
+  _blueDisks: {fileID: 0}
+  _ball: {fileID: 0}
 --- !u!1001 &255769262317938082
 PrefabInstance:
   m_ObjectHideFlags: 0

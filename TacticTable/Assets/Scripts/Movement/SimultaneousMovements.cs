@@ -1,7 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using Newtonsoft.Json;
 
 public class SimultaneousMovements : Movement
 {
@@ -44,5 +44,20 @@ public class SimultaneousMovements : Movement
             endPositions.AddRange(move.GetEndPositions());
         }
         return endPositions;
+    }
+
+    public override string ToJSON()
+    {
+        Dictionary<string, dynamic> dic = new Dictionary<string, dynamic>();
+        dic.Add("movementType", "simultaneous");
+
+        List<string> movementsAsJson = new List<string>();
+        foreach (var move in movements)
+        {
+            movementsAsJson.Add(move.ToJSON());
+        }
+        dic.Add("movements", JsonConvert.SerializeObject(movementsAsJson));
+
+        return JsonConvert.SerializeObject(dic);
     }
 }

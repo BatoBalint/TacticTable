@@ -10,6 +10,7 @@ public class PositionScalerScript : MonoBehaviour
     [SerializeField] private Transform _redDisks;
     [SerializeField] private Transform _blueDisks;
     [SerializeField] private Transform _ball;
+    [SerializeField] private bool _moveBall = true;
 
     void Start()
     {
@@ -48,7 +49,7 @@ public class PositionScalerScript : MonoBehaviour
 
     private void AdditionalDisksToStartingPosition()
     {
-        // the "magic" numbers are pre tested numbers from the editor (3, 4, offset)
+        // the "magic" numbers are pre tested numbers from the editor (-3f, -4f, offset)
         float offset = 0.7f;
 
         // Subtract 200 because of margin center (400 / 2)
@@ -61,6 +62,16 @@ public class PositionScalerScript : MonoBehaviour
         if (_blueDisks.childCount > 6)
             _blueDisks.GetChild(_blueDisks.childCount - 1).position = new Vector3(calculatedPos.x + offset, -3f, 0);
 
-        _ball.position = new Vector3(calculatedPos.x, -4f, 0);
+        if (_moveBall) _ball.position = new Vector3(calculatedPos.x, -4f, 0);
+    }
+
+    // Returns the growth scale or 1 if couldn't find a main camera
+    public static float GetWidthGrowthScale()
+    {
+        Camera mainCamera = Camera.main;
+        if (mainCamera != null)
+            return mainCamera.pixelWidth / 1920f;
+        else
+            return 1f;
     }
 }

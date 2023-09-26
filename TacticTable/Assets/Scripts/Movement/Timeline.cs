@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class Timeline : MonoBehaviour
 {
-
     public bool timelinePlays = false;
     public float timeMultiplier = 1.0f;
     public float time = 0.0f;
-    private float animationTime = 0.0f;
+    private float _animationTime = 0.0f;
     public List<Movement> moves = new List<Movement>();
     public List<DisksState> disksStates = new List<DisksState>();
     public int index = 0;
@@ -42,28 +41,28 @@ public class Timeline : MonoBehaviour
 
         IncreaseTime();
 
-        bool animationEnded = false;
+        bool timelineEnded = false;
         if (time < 0f)
         {
             time = 0;
-            animationEnded = true;
+            timelineEnded = true;
         }
         else if (time > 1f)
         {
             time = 1;
-            animationEnded = true;
+            timelineEnded = true;
         }
 
-        bool animationFinished = moves[index].Animate(animationTime);
+        bool animationFinished = moves[index].Animate(_animationTime);
 
-        if (animationEnded || animationFinished)
+        if (timelineEnded || animationFinished)
             NextAnimation();
     }
 
     private void IncreaseTime()
     {
         time += Time.deltaTime * (timeMultiplier + Math.Abs(0.5f - time));
-        animationTime = AnimationCurve.EaseInOut(0, 0, 1, 1).Evaluate(time);
+        _animationTime = AnimationCurve.EaseInOut(0, 0, 1, 1).Evaluate(time);
     }
 
     private void NextAnimation()
@@ -146,9 +145,9 @@ public class Timeline : MonoBehaviour
 
     public void ClearMoves()
     {
-        while (moves.Count > 1)
+        while (moves.Count > 0)
         {
-            moves.RemoveAt(1);
+            moves.RemoveAt(0);
         }
     }
 
@@ -173,5 +172,13 @@ public class Timeline : MonoBehaviour
             newMoveIndex--;
 
         moves.Insert(newMoveIndex, move);
+    }
+
+    public Dictionary<string, dynamic> ToJSON()
+    {
+        Dictionary<string, dynamic> jsonDictionary = new Dictionary<string, dynamic>();
+        
+
+        return jsonDictionary;
     }
 }
