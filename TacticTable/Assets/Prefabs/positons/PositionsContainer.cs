@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PositionsContainer : MonoBehaviour
 {
@@ -9,18 +7,15 @@ public class PositionsContainer : MonoBehaviour
     [SerializeField]
     private Transform RedDisksHolder;
 
-
     private float slideDuration = 1f; // Time in seconds to complete the slide
 
-
     private System.Collections.IEnumerator Move(int index)
-     {
+    {
         float t = 0f;
-        
 
-         Transform redPositions = transform.GetChild(index).GetChild(0);
+        Transform redPositions = transform.GetChild(index).GetChild(0);
         
-         Transform bluePositions = transform.GetChild(index).GetChild(1);
+        Transform bluePositions = transform.GetChild(index).GetChild(1);
 
         while (t < 1f)
         {
