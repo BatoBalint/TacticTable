@@ -1,5 +1,7 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using UnityEngine;
 
 public class Timeline : MonoBehaviour
@@ -8,8 +10,8 @@ public class Timeline : MonoBehaviour
     public float timeMultiplier = 1.0f;
     public float time = 0.0f;
     private float _animationTime = 0.0f;
-    public List<Movement> moves = new List<Movement>();
-    public List<DisksState> disksStates = new List<DisksState>();
+    public List<Movement> Moves = new List<Movement>();
+    public List<DisksState> DiskStates = new List<DisksState>();
     public int index = 0;
     private int _partialAnimationEndIndex = 0;
 
@@ -33,7 +35,7 @@ public class Timeline : MonoBehaviour
 
     private void Animate()
     {
-        if (index == moves.Count)
+        if (index == Moves.Count)
         {
             Stop();
             return;
@@ -53,7 +55,7 @@ public class Timeline : MonoBehaviour
             timelineEnded = true;
         }
 
-        bool animationFinished = moves[index].Animate(_animationTime);
+        bool animationFinished = Moves[index].Animate(_animationTime);
 
         if (timelineEnded || animationFinished)
             NextAnimation();
@@ -79,7 +81,7 @@ public class Timeline : MonoBehaviour
         }
         else if (time >= 1f)
         {
-            if (index < moves.Count - 1)
+            if (index < Moves.Count - 1)
             { 
                 index++;
                 time = 0f;
@@ -104,7 +106,7 @@ public class Timeline : MonoBehaviour
 
     public void Play()
     {
-        if (index == 0) disksStates[0].ResetDisksToSavedPosition();
+        if (index == 0) DiskStates[0].ResetDisksToSavedPosition();
 
         timelinePlays = true;
         if (timeMultiplier == 0)
@@ -129,56 +131,131 @@ public class Timeline : MonoBehaviour
 
     public void Add(Movement move, Transform diskHolder)
     {
-        moves.Add(move);
+        Moves.Add(move);
         DisksState disksState = new DisksState(diskHolder);
         foreach (var disk in move.GetEndPositions())
         {
             disksState.SetDiskPosition(disk.Key, disk.Value);
         }
-        disksStates.Add(disksState);
+        DiskStates.Add(disksState);
     }
 
     public void SaveDiskPositions(Transform diskHolder)
     {
-        disksStates.Add(new DisksState(diskHolder));
+        DiskStates.Add(new DisksState(diskHolder));
     }
 
     public void ClearMoves()
     {
-        while (moves.Count > 0)
-        {
-            moves.RemoveAt(0);
-        }
+        while (Moves.Count > 0)
+            Moves.RemoveAt(0);
+
+        while (DiskStates.Count > 0)
+            DiskStates.RemoveAt(0);
     }
 
     public void RemoveAt(int removeIndex)
     {
-        if (removeIndex < 1 || removeIndex > moves.Count - 1)
+        if (removeIndex < 1 || removeIndex > Moves.Count - 1)
             return;
 
-        moves.RemoveAt(removeIndex);
-        disksStates.RemoveAt(removeIndex + 1);
+        Moves.RemoveAt(removeIndex);
+        DiskStates.RemoveAt(removeIndex + 1);
     }
 
     public void Insert(int moveIndex, int newMoveIndex)
     {
-        if (moveIndex == newMoveIndex || moveIndex < 0 || moveIndex >= moves.Count || newMoveIndex < 0 || newMoveIndex > moves.Count)
+        if (moveIndex == newMoveIndex || moveIndex < 0 || moveIndex >= Moves.Count || newMoveIndex < 0 || newMoveIndex > Moves.Count)
             return;
 
-        Movement move = moves[moveIndex];
-        moves.RemoveAt(moveIndex);
+        Movement move = Moves[moveIndex];
+        Moves.RemoveAt(moveIndex);
 
         if (newMoveIndex > moveIndex)
             newMoveIndex--;
 
-        moves.Insert(newMoveIndex, move);
+        Moves.Insert(newMoveIndex, move);
     }
 
-    public Dictionary<string, dynamic> ToJSON()
+    public string ToJSON()
     {
-        Dictionary<string, dynamic> jsonDictionary = new Dictionary<string, dynamic>();
+        Dictionary<string, string> jsonDictionary = new Dictionary<string, string>();
         
+        List<string> movesAsJsonString = new List<string>();
+        foreach (var move in Moves)
+        {
+            movesAsJsonString.Add(move.ToJSON());
+        }
+        jsonDictionary.Add("moves", JsonConvert.SerializeObject(movesAsJsonString));
 
-        return jsonDictionary;
+        List<string> diskStatesAsJsonString = new List<string>();
+        foreach (var diskState in DiskStates)
+        {
+            diskStatesAsJsonString.Add(diskState.ToJSON());
+        }
+        jsonDictionary.Add("disksStates", JsonConvert.SerializeObject(diskStatesAsJsonString));
+
+        return JsonConvert.SerializeObject(jsonDictionary);
+    }
+
+    public void LoadFromJSON(string jsonString, Transform diskHolder)
+    {
+        if (DiskScript.DiskScripts.Count == 0)
+            return;
+        ClearMoves();
+
+        Dictionary<string, string> timelineDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonString);
+
+        if (timelineDic["moves"] != null)
+        {
+            List<string> movesList = JsonConvert.DeserializeObject<List<string>>(timelineDic["moves"]);
+            foreach (var moveString in movesList)
+            {
+                Dictionary<string, string> moveDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(moveString);
+
+                switch (moveDic["movementType"])
+                {
+                    case "linear":
+                        LinearMovement lm = MakeLinearMovement(moveDic);
+                        if (lm != null) Add(lm, diskHolder);
+
+                        break;
+                    case "switch":
+
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    private LinearMovement MakeLinearMovement(Dictionary<string, string> moveDic)
+    {
+        int diskId;
+        if (!int.TryParse(moveDic["diskId"], out diskId))
+            diskId = -100;
+
+        int i = 0;
+        DiskScript disk = DiskScript.DiskScripts[i];
+        while (disk.Id != diskId && i < DiskScript.DiskScripts.Count)
+        {
+            i++;
+            disk = DiskScript.DiskScripts[i];
+        }
+        if (i == DiskScript.DiskScripts.Count)
+            return null;
+
+        string[] startPos = moveDic["startPos"].Split(',');
+        string[] endPos = moveDic["endPos"].Split(',');
+
+        float startX, startY, endX, endY;
+
+        if (!float.TryParse(startPos[0], out startX)) startX = 0f;
+        if (!float.TryParse(startPos[1], out startY)) startY = 0f;
+        if (!float.TryParse(endPos[0], out endX)) endX = 0f;
+        if (!float.TryParse(endPos[1], out endY)) endY = 0f;
+
+        return new LinearMovement(disk.gameObject, new Vector3(startX, startY), new Vector3(endX, endY));
     }
 }

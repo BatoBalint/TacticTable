@@ -9,6 +9,7 @@ using UnityEngine;
 public class DiskScript : MonoBehaviour
 {
     // Global variables
+    public static List<DiskScript> DiskScripts = new List<DiskScript>();
     public static List<DiskScript> SelectedDisks = new List<DiskScript>();
     public static bool SelectOnMove = false;
 
@@ -36,6 +37,8 @@ public class DiskScript : MonoBehaviour
     {
         _circleCollider = transform.GetComponent<CircleCollider2D>();
         PositionAtSelection = Vector3.zero;
+
+        DiskScripts.Add(this);
     }
 
     public void Update()

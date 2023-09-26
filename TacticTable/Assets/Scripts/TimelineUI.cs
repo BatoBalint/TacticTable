@@ -27,7 +27,7 @@ public class TimelineUI : MonoBehaviour
         {
             Destroy(t.gameObject);
         }
-        foreach (Movement move in _timeline.moves)
+        foreach (Movement move in _timeline.Moves)
         {
             if (move.GetType() != typeof(DisksState))
             { 

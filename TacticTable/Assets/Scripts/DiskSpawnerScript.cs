@@ -27,7 +27,6 @@ public class DiskSpawnerScript : MonoBehaviour
 
         for (int i = 0; i < positions.childCount && i < transform.childCount; i++)
         {
-            Debug.Log(_isBlue ? "blue" : "red");
             transform.GetChild(i).position = positions.GetChild(i).position;
         }
     }

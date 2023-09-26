@@ -114,11 +114,11 @@ public class AnimEditMenuScript : MonoBehaviour
     // Called every time a disk is moved by the user
     private void DiskPositionChange(DiskScript disk)
     {
-        if (_timeline.disksStates.Count == 1 && _animationMode == AnimationMode.None)
+        if (_timeline.DiskStates.Count == 1 && _animationMode == AnimationMode.None)
         {
-            _timeline.disksStates[0].SetDiskPosition(disk, disk.transform.position);
+            _timeline.DiskStates[0].SetDiskPosition(disk, disk.transform.position);
         }
-        else if (_autoMoveOnDiskMove && _timeline.moves.Count > 0 && _animationMode == AnimationMode.None)
+        else if (_autoMoveOnDiskMove && _timeline.Moves.Count > 0 && _animationMode == AnimationMode.None)
         {
             SetMode(AnimationMode.Move);
         }
@@ -155,7 +155,7 @@ public class AnimEditMenuScript : MonoBehaviour
                 _timelineUIref.UpdateTimeline();
 
                 _timeline.SetTimeSpeed(4);
-                _timeline.AnimateAtIndex(_timeline.moves.Count - 1);
+                _timeline.AnimateAtIndex(_timeline.Moves.Count - 1);
 
                 ResetAfterAddingMovement();
             }
@@ -175,7 +175,7 @@ public class AnimEditMenuScript : MonoBehaviour
 
     public void DeleteButtonClick()
     {
-        _timeline.RemoveAt(_timeline.moves.Count - 1);
+        _timeline.RemoveAt(_timeline.Moves.Count - 1);
         _timelineUIref.UpdateTimeline();
     }
 
