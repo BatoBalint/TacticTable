@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,5 +19,12 @@ public class TestMovement : Movement
     public override Dictionary<DiskScript, Vector3> GetEndPositions()
     {
         return new Dictionary<DiskScript, Vector3>();
+    }
+
+    public override string ToJSON()
+    {
+        Dictionary<string, string> dic = new Dictionary<string, string>();
+        dic.Add("movementType", "test");
+        return JsonConvert.SerializeObject(dic);
     }
 }

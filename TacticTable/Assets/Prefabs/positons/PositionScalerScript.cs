@@ -10,6 +10,7 @@ public class PositionScalerScript : MonoBehaviour
     [SerializeField] private Transform _redDisks;
     [SerializeField] private Transform _blueDisks;
     [SerializeField] private Transform _ball;
+    [SerializeField] private bool _moveBall = true;
 
     void Start()
     {
@@ -61,7 +62,7 @@ public class PositionScalerScript : MonoBehaviour
         if (_blueDisks.childCount > 6)
             _blueDisks.GetChild(_blueDisks.childCount - 1).position = new Vector3(calculatedPos.x + offset, -3f, 0);
 
-        _ball.position = new Vector3(calculatedPos.x, -4f, 0);
+        if (_moveBall) _ball.position = new Vector3(calculatedPos.x, -4f, 0);
     }
 
     // Returns the growth scale or 1 if couldn't find a main camera

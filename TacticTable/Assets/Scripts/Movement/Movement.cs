@@ -10,4 +10,6 @@ public abstract class Movement
     public abstract bool Animate(float time);
 
     public abstract Dictionary<DiskScript, Vector3> GetEndPositions();
+
+    public abstract string ToJSON();
 }

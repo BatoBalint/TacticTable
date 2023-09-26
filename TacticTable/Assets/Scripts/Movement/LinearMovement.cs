@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,5 +35,16 @@ public class LinearMovement : Movement
         Dictionary<DiskScript, Vector3> endPositions = new Dictionary<DiskScript, Vector3>();
         endPositions.Add(disk.GetComponent<DiskScript>(), endPos);
         return endPositions;
+    }
+
+    public override string ToJSON()
+    {
+        Dictionary<string, dynamic> dic = new Dictionary<string, dynamic>();
+        dic.Add("movementType", "linear");
+        dic.Add("diskId", disk.GetComponent<DiskScript>().Id);
+        dic.Add("startPos", new float[] { startPos.x, startPos.y });
+        dic.Add("endPos", new float[] { endPos.x, endPos.y });
+
+        return JsonConvert.SerializeObject(dic);
     }
 }

@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -61,5 +62,20 @@ public class SwitchMovement : Movement
         endPositions.Add(disk.GetComponent<DiskScript>(), endPos);
         endPositions.Add(otherDisk.GetComponent<DiskScript>(), otherEndPos);
         return endPositions;
+    }
+
+    public override string ToJSON()
+    {
+        Dictionary<string, dynamic> dic = new Dictionary<string, dynamic>();
+
+        DiskScript diskScript = disk.GetComponent<DiskScript>();
+        DiskScript otherDiskScript = otherDisk.GetComponent<DiskScript>();
+
+        dic.Add("movementType", "switch");
+        dic.Add("diskIds", new int[] { diskScript.Id, otherDiskScript.Id });
+        dic.Add("diskPos", new float[] { startPos.x, startPos.y });
+        dic.Add("otherDiskPos", new float[] { otherStartPos.x, otherStartPos.y });
+
+        return JsonConvert.SerializeObject(dic);
     }
 }
