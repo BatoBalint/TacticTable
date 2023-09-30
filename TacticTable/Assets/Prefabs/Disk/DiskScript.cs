@@ -12,6 +12,7 @@ public class DiskScript : MonoBehaviour
     public static List<DiskScript> DiskScripts = new List<DiskScript>();
     public static List<DiskScript> SelectedDisks = new List<DiskScript>();
     public static bool SelectOnMove = false;
+    private static int _nextId = 0;
 
     public bool Selectable = true;
     public bool IsBall = false;
@@ -37,8 +38,15 @@ public class DiskScript : MonoBehaviour
     {
         _circleCollider = transform.GetComponent<CircleCollider2D>();
         PositionAtSelection = Vector3.zero;
+        Id = _nextId;
+        _nextId++;
 
         DiskScripts.Add(this);
+    }
+
+    public void OnDestroy()
+    {
+        UnselectDisk();
     }
 
     public void Update()
@@ -112,18 +120,19 @@ public class DiskScript : MonoBehaviour
 
     public void SelectDisk()
     {
-        if (Selectable)
-        {
-            _diskSelectionMarker.SetActive(true);
-            _diskIsSelected = true;
+        if (_diskIsSelected || !Selectable) return;
 
-            PositionAtSelection = transform.position;
-            SelectedDisks.Add(this);
-        }
+        _diskSelectionMarker.SetActive(true);
+        _diskIsSelected = true;
+
+        PositionAtSelection = transform.position;
+        SelectedDisks.Add(this);
     }
 
     public void UnselectDisk()
     {
+        if (!_diskIsSelected) return;
+
         _diskSelectionMarker.SetActive(false);
         _diskIsSelected = false;
 

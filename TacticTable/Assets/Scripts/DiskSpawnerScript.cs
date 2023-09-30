@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class DiskSpawnerScript : MonoBehaviour
 {
-    private static int _index = 0;
-
     [SerializeField] private Transform _blueDisk;
     [SerializeField] private Transform _redDisk;
     [SerializeField] private Transform _startPos;
@@ -18,8 +16,6 @@ public class DiskSpawnerScript : MonoBehaviour
         {
             Transform newDisk = Instantiate(_isBlue ? _blueDisk : _redDisk, transform);
             newDisk.position = new Vector3(-6 + (i * 2), _isBlue ? 2 : 0, 0);
-            newDisk.GetComponent<DiskScript>().Id = _index;
-            _index++;
         }
 
         if (_startPos.childCount < 2) return;

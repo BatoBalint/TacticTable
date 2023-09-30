@@ -1,8 +1,6 @@
 using Newtonsoft.Json;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class DisksState
 {
@@ -81,5 +79,11 @@ public class DisksState
             dic.Add(disk.Key.Id, JsonConvert.SerializeObject(new float[] { disk.Value.x, disk.Value.y }));
         }
         return JsonConvert.SerializeObject(dic);
+    }
+
+    // It's mainly used when importing a saved timeline
+    public void AddToPositions(DiskScript disk, Vector3 position)
+    {
+        _positions.Add(disk, position);
     }
 }

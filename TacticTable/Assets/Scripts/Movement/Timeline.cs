@@ -106,7 +106,7 @@ public class Timeline : MonoBehaviour
 
     public void Play()
     {
-        if (index == 0) DiskStates[0].ResetDisksToSavedPosition();
+        if (index == 0 && DiskStates.Count > 0) DiskStates[0].ResetDisksToSavedPosition();
 
         timelinePlays = true;
         if (timeMultiplier == 0)
@@ -131,8 +131,15 @@ public class Timeline : MonoBehaviour
 
     public void Add(Movement move, Transform diskHolder)
     {
+        DisksState disksState;
+        if (Moves.Count == 0)
+        { 
+            disksState = new DisksState(diskHolder);
+            DiskStates.Add(disksState);
+        }
+
         Moves.Add(move);
-        DisksState disksState = new DisksState(diskHolder);
+        disksState = new DisksState(diskHolder);
         foreach (var disk in move.GetEndPositions())
         {
             disksState.SetDiskPosition(disk.Key, disk.Value);
@@ -147,11 +154,8 @@ public class Timeline : MonoBehaviour
 
     public void ClearMoves()
     {
-        while (Moves.Count > 0)
-            Moves.RemoveAt(0);
-
-        while (DiskStates.Count > 0)
-            DiskStates.RemoveAt(0);
+        Moves.Clear();
+        DiskStates.Clear();
     }
 
     public void RemoveAt(int removeIndex)
@@ -181,6 +185,7 @@ public class Timeline : MonoBehaviour
     {
         Dictionary<string, string> jsonDictionary = new Dictionary<string, string>();
         
+        // Save moves
         List<string> movesAsJsonString = new List<string>();
         foreach (var move in Moves)
         {
@@ -188,6 +193,7 @@ public class Timeline : MonoBehaviour
         }
         jsonDictionary.Add("moves", JsonConvert.SerializeObject(movesAsJsonString));
 
+        // Save diskstates
         List<string> diskStatesAsJsonString = new List<string>();
         foreach (var diskState in DiskStates)
         {
@@ -200,62 +206,36 @@ public class Timeline : MonoBehaviour
 
     public void LoadFromJSON(string jsonString, Transform diskHolder)
     {
+        // Terminate if there are no disks in the scene
         if (DiskScript.DiskScripts.Count == 0)
             return;
+
         ClearMoves();
 
         Dictionary<string, string> timelineDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonString);
 
+        // Load movements if the list is in the dictionary
         if (timelineDic["moves"] != null)
         {
             List<string> movesList = JsonConvert.DeserializeObject<List<string>>(timelineDic["moves"]);
             foreach (var moveString in movesList)
             {
-                Dictionary<string, string> moveDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(moveString);
-
-                switch (moveDic["movementType"])
-                {
-                    case "linear":
-                        LinearMovement lm = MakeLinearMovement(moveDic);
-                        if (lm != null) Add(lm, diskHolder);
-
-                        break;
-                    case "switch":
-
-                        break;
-                    default:
-                        break;
-                }
+                Movement move = MovementFactory.LoadMovement(moveString);
+                if (move != null)
+                { 
+                    Moves.Add(move);
+                } 
             }
         }
-    }
 
-    private LinearMovement MakeLinearMovement(Dictionary<string, string> moveDic)
-    {
-        int diskId;
-        if (!int.TryParse(moveDic["diskId"], out diskId))
-            diskId = -100;
-
-        int i = 0;
-        DiskScript disk = DiskScript.DiskScripts[i];
-        while (disk.Id != diskId && i < DiskScript.DiskScripts.Count)
+        // Load diskstates if the list is in the dictionary
+        if (timelineDic["disksStates"] != null)
         {
-            i++;
-            disk = DiskScript.DiskScripts[i];
+            List<string> diskStatesList = JsonConvert.DeserializeObject<List<string>>(timelineDic["disksStates"]);
+            foreach (var stateString in diskStatesList)
+            {
+                DiskStates.Add(DisksStateFactory.LoadDisksState(stateString));
+            }
         }
-        if (i == DiskScript.DiskScripts.Count)
-            return null;
-
-        string[] startPos = moveDic["startPos"].Split(',');
-        string[] endPos = moveDic["endPos"].Split(',');
-
-        float startX, startY, endX, endY;
-
-        if (!float.TryParse(startPos[0], out startX)) startX = 0f;
-        if (!float.TryParse(startPos[1], out startY)) startY = 0f;
-        if (!float.TryParse(endPos[0], out endX)) endX = 0f;
-        if (!float.TryParse(endPos[1], out endY)) endY = 0f;
-
-        return new LinearMovement(disk.gameObject, new Vector3(startX, startY), new Vector3(endX, endY));
     }
 }
