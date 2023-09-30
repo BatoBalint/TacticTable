@@ -12,19 +12,22 @@ public class PositionScalerScript : MonoBehaviour
     [SerializeField] private Transform _ball;
     [SerializeField] private bool _moveBall = true;
 
-    void Start()
+    public void ScalePositions()
     {
         Transform t = transform;
 
-        float growthScale = Camera.main.aspect / (1920f/1080);
+        float growthScale = Camera.main.aspect / (1920f / 1080);
         t.position = new Vector3(transform.position.x * growthScale, transform.position.y, transform.position.z);
         t.localScale = new Vector3(growthScale, 1, 1);
+    }
 
-        DisksToStartingPosition();
+    public void MoveDisksToDefaults()
+    {
+        PlayersToStartingPosition();
         AdditionalDisksToStartingPosition();
     }
 
-    private void DisksToStartingPosition()
+    private void PlayersToStartingPosition()
     {
         if (_startingPosition.childCount < 2)
             return;

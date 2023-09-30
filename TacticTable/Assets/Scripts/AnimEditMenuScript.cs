@@ -31,7 +31,7 @@ public class AnimEditMenuScript : MonoBehaviour
 
     private void Start()
     {
-        _timeline.SaveDiskPositions(_diskHolder);
+        // _timeline.SaveDiskPositions(_diskHolder);
     }
 
     private void OnDestroy()

@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using UnityEngine;
 
 public class Timeline : MonoBehaviour
@@ -147,11 +146,6 @@ public class Timeline : MonoBehaviour
         DiskStates.Add(disksState);
     }
 
-    public void SaveDiskPositions(Transform diskHolder)
-    {
-        DiskStates.Add(new DisksState(diskHolder));
-    }
-
     public void ClearMoves()
     {
         Moves.Clear();
@@ -160,16 +154,19 @@ public class Timeline : MonoBehaviour
 
     public void RemoveAt(int removeIndex)
     {
-        if (removeIndex < 1 || removeIndex > Moves.Count - 1)
+        if (removeIndex < 0 || removeIndex > Moves.Count - 1)
             return;
 
         Moves.RemoveAt(removeIndex);
-        DiskStates.RemoveAt(removeIndex + 1);
+        if (removeIndex == 0)
+            DiskStates.RemoveAt(0);
+        else
+            DiskStates.RemoveAt(removeIndex + 1);
     }
 
     public void Insert(int moveIndex, int newMoveIndex)
     {
-        if (moveIndex == newMoveIndex || moveIndex < 0 || moveIndex >= Moves.Count || newMoveIndex < 0 || newMoveIndex > Moves.Count)
+        if (moveIndex == newMoveIndex || moveIndex < 0 || moveIndex >= Moves.Count || newMoveIndex < 0 || newMoveIndex >= Moves.Count)
             return;
 
         Movement move = Moves[moveIndex];

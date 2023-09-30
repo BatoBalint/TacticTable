@@ -14,12 +14,12 @@ public class DiskScript : MonoBehaviour
     public static bool SelectOnMove = false;
     private static int _nextId = 0;
 
+    // Public properties
     public bool Selectable = true;
     public bool IsBall = false;
     public bool IsBlue = false;
-    public int Id = -1;
+    public int Id = -1;            // Ball: -1, Disks: 0, 1, ...
 
-    private CircleCollider2D _circleCollider;
 
     // Selection related variables
     [SerializeField]
@@ -28,6 +28,7 @@ public class DiskScript : MonoBehaviour
     private bool _diskIsSelected = false;
 
     // Movement related variables
+    private CircleCollider2D _circleCollider;
     private bool _followFinger = false;
     private int _fingerId = -1;
     private float _touchStart = 0;      // Stores the time at touch start
@@ -38,8 +39,15 @@ public class DiskScript : MonoBehaviour
     {
         _circleCollider = transform.GetComponent<CircleCollider2D>();
         PositionAtSelection = Vector3.zero;
-        Id = _nextId;
-        _nextId++;
+        if (IsBall)
+        {
+            Id = -1;
+        }
+        else 
+        {
+            Id = _nextId;
+            ++_nextId;
+        }
 
         DiskScripts.Add(this);
     }

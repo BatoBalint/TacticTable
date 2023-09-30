@@ -4,7 +4,6 @@ using UnityEngine;
 
 public static class ApplicationStateManager
 {
-    public static DisksState animationDisksState = null;
-
-    public static Timeline TimelineToLoad = null;
+    public static string _timelineToLoad = null;
+    public static string _animationName = null;
 }

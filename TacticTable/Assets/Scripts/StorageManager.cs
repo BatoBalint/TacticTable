@@ -1,7 +1,10 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class StorageManager
@@ -11,43 +14,80 @@ public class StorageManager
     public string AppDirectoryPath { get; private set; }
     private string _savedAnimationsPath = "";
 
-
-
-    // Test
-    private string _testDirPath = "";
-
     public StorageManager()
     { 
         _seperator = Path.DirectorySeparatorChar;
 
         AppDirectoryPath = Application.persistentDataPath;
         _savedAnimationsPath = AppDirectoryPath + _seperator + "SavedAnimations";
-
-
-
-        //Test
-        _testDirPath = AppDirectoryPath + _seperator + "Tests";
     }
 
-    public string ReadFromSavedAnimations(string animationName)
+    public void SaveAnimation(string timelineAsJsonString, string animationName)
+    {
+        CheckPath(_savedAnimationsPath);
+        animationName = animationName.Trim();
+
+        string folderName = FilterDirectoryName(animationName);
+        string numbering = "";
+        int index = 2;
+        while (Directory.Exists(folderName + numbering))
+        {
+            numbering = index.ToString();
+            ++index;
+        }
+        Directory.CreateDirectory(Combine(_savedAnimationsPath, folderName + numbering));
+
+        Dictionary<string, string> animationDictionary = new Dictionary<string, string>();
+        animationDictionary.Add("name", animationName);
+        animationDictionary.Add("timeline", timelineAsJsonString);
+        string saveAsJsonString = JsonConvert.SerializeObject(animationDictionary);
+
+        StreamWriter sw =
+            new StreamWriter(Combine(_savedAnimationsPath, folderName + numbering, "animation.txt"));
+        sw.Write(saveAsJsonString);
+        sw.Close();
+    }
+
+    public void SaveAnimation(Timeline timeline, string animationName)
+    {
+        SaveAnimation(timeline.ToJSON(), animationName);
+    }
+
+    public string ReadFromSavedAnimations(string animationDirectoryName)
     {
         CheckPath(_savedAnimationsPath);
         string filePath = Combine(new string[] {
             _savedAnimationsPath, 
-            animationName, 
+            animationDirectoryName, 
             "animation.txt"
         });
         return File.ReadAllText(filePath);
     }
 
     public string[] ListSavedAnimations()
-    { 
+    {
+        CheckPath(_savedAnimationsPath);
         return Directory.GetDirectories(_savedAnimationsPath);
+    }
+
+    public Dictionary<string, string> GetSavedAnimations()
+    {
+        Dictionary<string, string> animationNames = new Dictionary<string, string>();
+        
+        string[] animationDirectoryList = ListSavedAnimations();
+        foreach (string animationPath in animationDirectoryList)
+        {
+            string fileAsText = File.ReadAllText(Combine(animationPath, "animation.txt"));
+            Dictionary<string, string> animDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(fileAsText);
+            animationNames.Add(animDic["name"] ?? "Animáció", animDic["timeline"]);
+        }
+
+        return animationNames;
     }
 
     public string[] ListDirectories(string pathInAppDirectory)
     {
-        string path = Combine(new string[] { AppDirectoryPath, pathInAppDirectory });
+        string path = Combine(AppDirectoryPath, pathInAppDirectory);
         if (Directory.Exists(path))
             return Directory.GetDirectories(path);
         else
@@ -56,7 +96,7 @@ public class StorageManager
 
     public string[] ListFiles(string pathInAppDirectory)
     {
-        string path = Combine(new string[] { AppDirectoryPath, pathInAppDirectory });
+        string path = Combine(AppDirectoryPath, pathInAppDirectory);
         if (Directory.Exists(path))
             return Directory.GetFiles(path);
         else
@@ -69,7 +109,7 @@ public class StorageManager
             Directory.CreateDirectory(path);
     }
 
-    private string Combine(string[] paths)
+    private string Combine(params string[] paths)
     {
         string seperator = "";
         string resultPath = "";
@@ -81,12 +121,15 @@ public class StorageManager
         return resultPath;
     }
 
-    //Test
-    public string ReadFromTest(string filename)
+    private string FilterDirectoryName(string dirName)
     {
-        CheckPath(_testDirPath);
-        string filePath = _testDirPath + _seperator + filename;
+        // https://stackoverflow.com/questions/907995/filter-a-string
+        var allowedChars =
+            Enumerable.Range('0', 10).Concat(
+            Enumerable.Range('A', 26)).Concat(
+            Enumerable.Range('a', 26));
 
-        return File.ReadAllText(filePath);
+        var goodChars = dirName.Where(c => allowedChars.Contains(c));
+        return new string(goodChars.ToArray());
     }
 }
