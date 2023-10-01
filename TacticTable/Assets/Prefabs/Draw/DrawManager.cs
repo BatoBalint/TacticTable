@@ -62,11 +62,10 @@ public class DrawManager : MonoBehaviour
             }
             else
             {
-                outOfBounds= true;
+                outOfBounds = true;
             }
         }
     }
-
 
     public void DeletLast()
     {
@@ -81,7 +80,6 @@ public class DrawManager : MonoBehaviour
             delet = _lines[listLength - 1];
             Destroy(_lines[listLength - 1].gameObject);
             _lines.Remove(delet);
-            listLength--;
         }
     }
 
