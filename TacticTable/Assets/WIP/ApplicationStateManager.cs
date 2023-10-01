@@ -4,6 +4,6 @@ using UnityEngine;
 
 public static class ApplicationStateManager
 {
-    public static string _timelineToLoad = null;
-    public static string _animationName = null;
+    public static string TimelineToLoad = null;
+    public static string AnimationName = null;
 }

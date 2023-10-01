@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class SavedAnimationButtonScript : MonoBehaviour
 {
+    private PlaySceneManager _sceneManager;
+
     private TextMeshProUGUI _text;
     private string _timelineAsJsonString;
     private string _animationName;
@@ -16,14 +18,20 @@ public class SavedAnimationButtonScript : MonoBehaviour
 
     public void ButtonClick()
     {
-        ApplicationStateManager._timelineToLoad = _timelineAsJsonString;
-        ApplicationStateManager._animationName = _animationName;
+        ApplicationStateManager.TimelineToLoad = _timelineAsJsonString;
+        ApplicationStateManager.AnimationName = _animationName;
+        _sceneManager.ChangeToAnimationEditScene();
     }
 
     public void Init(string name, string timelineJson)
-    { 
+    {
         _timelineAsJsonString = timelineJson;
         _animationName = name;
         _text.text = name;
+    }
+
+    public void SetSceneManager(PlaySceneManager sceneManager)
+    {
+        _sceneManager = sceneManager;
     }
 }

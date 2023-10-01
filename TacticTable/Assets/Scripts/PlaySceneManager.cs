@@ -43,7 +43,13 @@ public class PlaySceneManager : MonoBehaviour
             GameObject newButton = Instantiate(_savedAnimationButton);
             newButton.transform.SetParent(_savedAnimationsContainer, false);
             newButton.GetComponent<SavedAnimationButtonScript>().Init(anim.Key, anim.Value);
+            newButton.GetComponent<SavedAnimationButtonScript>().SetSceneManager(this);
         }
+    }
+
+    public void ChangeToAnimationEditScene()
+    {
+        ChangeScene("AnimationEditScene");
     }
 
     public void ChangeScene(string sceneName)
