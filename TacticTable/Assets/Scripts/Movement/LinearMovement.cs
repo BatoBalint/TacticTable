@@ -20,7 +20,7 @@ public class LinearMovement : Movement
 
     public override bool Animate(float time)
     {
-        // Ensure the time is between 0 and 1
+        // Ensure the Time is between 0 and 1
         time = Mathf.Clamp01(time);
 
         Vector3 newPosition = Vector3.Lerp(startPos, endPos, time);

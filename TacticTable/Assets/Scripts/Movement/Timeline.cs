@@ -6,16 +6,20 @@ using UnityEngine;
 
 public class Timeline : MonoBehaviour
 {
-    public bool timelinePlays = false;
-    public float timeMultiplier = 1.0f;
-    public float time = 0.0f;
-    private float _animationTime = 0.0f;
     public List<Movement> Moves = new List<Movement>();
     public List<DisksState> DiskStates = new List<DisksState>();
-    public int index = 0;
-    private int _partialAnimationEndIndex = 0;
 
     private TimelineUI _timelineUI;
+    
+    public int Index = 0;
+    public bool TimelinePlays = false;
+    public float Time = 0.0f;
+    public float TimeMultiplier = 1.0f;
+    private float _animationTime = 0.0f;
+    
+    private int _partialAnimationEndIndex = 0;
+
+    public int SelectedIndex = -1;
 
     public void Awake()
     {
@@ -24,25 +28,25 @@ public class Timeline : MonoBehaviour
 
     private void Update()
     {
-        if (_partialAnimationEndIndex != 0 && index == _partialAnimationEndIndex)
+        if (_partialAnimationEndIndex != 0 && Index == _partialAnimationEndIndex)
         {
             Stop();
             _partialAnimationEndIndex = 0;
         }
 
-        if (timelinePlays) Animate();
+        if (TimelinePlays) Animate();
     }
 
     public void AnimateAtIndex(int moveIndex)
     { 
         _partialAnimationEndIndex = moveIndex + 1;
-        index = moveIndex;
+        Index = moveIndex;
         Play();
     }
 
     private void Animate()
     {
-        if (index == Moves.Count)
+        if (Index == Moves.Count)
         {
             Stop();
             return;
@@ -51,18 +55,18 @@ public class Timeline : MonoBehaviour
         IncreaseTime();
 
         bool timelineEnded = false;
-        if (time < 0f)
+        if (Time < 0f)
         {
-            time = 0;
+            Time = 0;
             timelineEnded = true;
         }
-        else if (time > 1f)
+        else if (Time > 1f)
         {
-            time = 1;
+            Time = 1;
             timelineEnded = true;
         }
 
-        bool animationFinished = Moves[index].Animate(_animationTime);
+        bool animationFinished = Moves[Index].Animate(_animationTime);
 
         if (timelineEnded || animationFinished)
             NextAnimation();
@@ -70,28 +74,29 @@ public class Timeline : MonoBehaviour
 
     private void IncreaseTime()
     {
-        time += Time.deltaTime * (timeMultiplier + Math.Abs(0.5f - time));
-        _animationTime = AnimationCurve.EaseInOut(0, 0, 1, 1).Evaluate(time);
+        Time += UnityEngine.Time.deltaTime * (TimeMultiplier + Math.Abs(0.5f - Time));
+        _animationTime = AnimationCurve.EaseInOut(0, 0, 1, 1).Evaluate(Time);
     }
 
     private void NextAnimation()
     {
-        if (time <= 0f)
+
+        if (Time <= 0f)
         {
-            if (index > 0)
+            if (Index > 0)
             { 
-                index--;
-                time = 1f;
+                Index--;
+                Time = 1f;
             }    
             else
                 Stop();
         }
-        else if (time >= 1f)
+        else if (Time >= 1f)
         {
-            if (index < Moves.Count - 1)
+            if (Index < Moves.Count - 1)
             { 
-                index++;
-                time = 0f;
+                Index++;
+                Time = 0f;
             }
             else
                 Stop();
@@ -102,23 +107,26 @@ public class Timeline : MonoBehaviour
     private void Stop()
     {
         Pause();
-        time = 0f;
-        timeMultiplier = 1;
-        index = 0;
+        Time = 0f;
+        TimeMultiplier = 1;
+        Index = 0;
+        _partialAnimationEndIndex = 0;
+
+        _timelineUI.ReDrawUI();
     }
 
     private void Pause()
     {
-        timelinePlays = false;
+        TimelinePlays = false;
     }
 
     public void Play()
     {
-        if (index == 0 && DiskStates.Count > 0) DiskStates[0].ResetDisksToSavedPosition();
+        if (Index == 0 && DiskStates.Count > 0) DiskStates[0].ResetDisksToSavedPosition();
 
-        timelinePlays = true;
-        if (timeMultiplier == 0)
-            timeMultiplier = 1;
+        TimelinePlays = true;
+        if (TimeMultiplier == 0)
+            TimeMultiplier = 1;
 
         _timelineUI.ReDrawUI();
     }
@@ -127,11 +135,11 @@ public class Timeline : MonoBehaviour
     {
         if (timeSpeed != 0)
         {
-            timeMultiplier = timeSpeed;
+            TimeMultiplier = timeSpeed;
             if (timeSpeed < 0)
-                time = 1;
+                Time = 1;
             else if (timeSpeed > 0)
-                time = 0;
+                Time = 0;
         }
         else
         {
@@ -163,9 +171,14 @@ public class Timeline : MonoBehaviour
         DiskStates.Clear();
     }
 
+    public void RemoveAtSelection()
+    {
+        RemoveAt(SelectedIndex);
+    }
+
     public void RemoveAt(int removeIndex)
     {
-        if (removeIndex < 0 || removeIndex > Moves.Count - 1)
+        if (removeIndex < 0 || removeIndex >= Moves.Count)
             return;
 
         Moves.RemoveAt(removeIndex);
@@ -176,6 +189,8 @@ public class Timeline : MonoBehaviour
 
         if (Moves.Count == 0)
             DiskStates.Clear();
+
+        _timelineUI.ReDrawUI();
     }
 
     public void Insert(int moveIndex, int newMoveIndex)
@@ -190,6 +205,20 @@ public class Timeline : MonoBehaviour
             newMoveIndex--;
 
         Moves.Insert(newMoveIndex, move);
+    }
+
+    public void SelectMovement(int index)
+    {
+        if (index < 0 || index >= Moves.Count)
+            return;
+
+        if (index == SelectedIndex)
+        { 
+            SelectedIndex = -1;
+            return;
+        }
+
+        SelectedIndex = index;
     }
 
     public string ToJSON()

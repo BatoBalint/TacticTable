@@ -43,5 +43,8 @@ public class AnimEditSceneManager : MonoBehaviour
         while (DiskScript.SelectedDisks.Count > 0) DiskScript.SelectedDisks[0].UnselectDisk();
         DiskScript.DiskScripts.Clear();
         _timeline.ClearMoves();
+        MovementButtonScript.ClearStatics();
+        ApplicationStateManager.TimelineToLoad = null;
+        ApplicationStateManager.AnimationName = "";
     }
 }

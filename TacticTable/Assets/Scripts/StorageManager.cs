@@ -53,6 +53,15 @@ public class StorageManager
         SaveAnimation(timeline.ToJSON(), animationName);
     }
 
+    public void DeleteAnimation(string animationName)
+    { 
+        string path = Combine(_savedAnimationsPath, FilterDirectoryName(animationName));
+        if (Directory.Exists(path))
+        { 
+            Directory.Delete(path, true);
+        }
+    }
+
     public string ReadFromSavedAnimations(string animationDirectoryName)
     {
         CheckPath(_savedAnimationsPath);

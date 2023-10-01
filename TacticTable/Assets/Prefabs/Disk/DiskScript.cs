@@ -31,7 +31,7 @@ public class DiskScript : MonoBehaviour
     private CircleCollider2D _circleCollider;
     private bool _followFinger = false;
     private int _fingerId = -1;
-    private float _touchStart = 0;      // Stores the time at touch start
+    private float _touchStart = 0;      // Stores the Time at touch start
     private Vector3 _touchOffset;
     private float _moveSinceGrab = 0f;  // distance traveld since grab event
 

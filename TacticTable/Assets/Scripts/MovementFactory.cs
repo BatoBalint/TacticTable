@@ -58,9 +58,9 @@ public class MovementFactory
         int.TryParse(idStrings[1], out ids[1]);
 
         // Get disks or terminate if can't
-        DiskScript disk1 = DiskScript.DiskScripts.Where(d => d.Id == ids[0]).FirstOrDefault(null);
+        DiskScript disk1 = DiskScript.DiskScripts.Where(d => d.Id == ids[0]).FirstOrDefault();
         if (disk1 == null) return null;
-        DiskScript disk2 = DiskScript.DiskScripts.Where(d => d.Id == ids[1]).FirstOrDefault(null);
+        DiskScript disk2 = DiskScript.DiskScripts.Where(d => d.Id == ids[1]).FirstOrDefault();
         if (disk2 == null) return null;
 
         movement = new SwitchMovement(

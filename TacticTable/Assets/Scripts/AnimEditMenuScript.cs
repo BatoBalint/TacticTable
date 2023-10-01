@@ -125,7 +125,7 @@ public class AnimEditMenuScript : MonoBehaviour
         }
     }
 
-    // Called every time a disk is moved by the user
+    // Called every Time a disk is moved by the user
     private void DiskPositionChange(DiskScript disk)
     { 
         if (_timeline.DiskStates.Count == 1 && _animationMode == AnimationMode.None)
@@ -189,8 +189,7 @@ public class AnimEditMenuScript : MonoBehaviour
 
     public void DeleteButtonClick()
     {
-        _timeline.RemoveAt(_timeline.Moves.Count - 1);
-        _timelineUI.ReDrawUI();
+        _timeline.RemoveAtSelection();
     }
 
     public void InitiateSave()

@@ -4090,6 +4090,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _timelineItem: {fileID: 3360051473295244072, guid: d57f187015e3299439d12c8e7ef6792d, type: 3}
   _timelineItemHolder: {fileID: 2060386727}
+  SelectedTimelineItem: {fileID: 0}
 --- !u!114 &1544422458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4102,10 +4103,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78fc5a97fd5084f4c9e6e31c1fe30f7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timelinePlays: 0
-  timeMultiplier: 1
-  time: 0
   index: 0
+  timelinePlays: 0
+  time: 0
+  timeMultiplier: 1
+  SelectedIndex: -1
 --- !u!4 &1546658568 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4811896840134211822, guid: 49a2faa0897040148b1c732064a228ea, type: 3}
