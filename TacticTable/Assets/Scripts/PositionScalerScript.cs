@@ -50,6 +50,7 @@ public class PositionScalerScript : MonoBehaviour
 
         // Subtract 200 because of margin center (400 / 2)
         int screenPos = Camera.main.pixelWidth - 200;
+        
         Vector3 calculatedPos = Camera.main.ScreenToWorldPoint(new Vector3(screenPos, 0, 0));
 
         if (_redDisks.childCount > 6)

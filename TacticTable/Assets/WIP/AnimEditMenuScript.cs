@@ -149,7 +149,11 @@ public class AnimEditMenuScript : MonoBehaviour
                 DiskScript disk1Script = disk1.GetComponent<DiskScript>();
                 DiskScript disk2Script = disk2.GetComponent<DiskScript>();
 
+
                 SwitchMovement swMovement = new SwitchMovement(disk1, disk2, disk1Script.PositionAtSelection, disk2Script.PositionAtSelection);
+
+               
+
 
                 _timeline.Add(swMovement, _diskHolder);
                 _timelineUIref.UpdateTimeline();
