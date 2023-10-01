@@ -43,6 +43,7 @@ public class TimelineUI : MonoBehaviour
 
     public void SelectTimelineItem(TimelineItemScript item)
     {
+        _timeline.SelectMovement(item.Index);
         // Makes it null proof
         if (SelectedTimelineItem == null)
         {
@@ -59,6 +60,5 @@ public class TimelineUI : MonoBehaviour
             SelectedTimelineItem.Unselect();
             SelectedTimelineItem = item;    
         }
-        _timeline.SelectMovement(SelectedTimelineItem.Index);
     }
 }
