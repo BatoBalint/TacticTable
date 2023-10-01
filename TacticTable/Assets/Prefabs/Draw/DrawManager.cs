@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class DrawManager : MonoBehaviour
@@ -12,9 +14,11 @@ public class DrawManager : MonoBehaviour
 
     public const float RESOLUTION = .1f;
 
-    private List<LineScript> _lines; 
+    private List<LineScript> _lines;
 
-    private RectTransform rect;
+    private BoxCollider2D boxCollider;
+
+    private bool outOfBounds = false;
 
     private void Start()
     {
@@ -23,8 +27,8 @@ public class DrawManager : MonoBehaviour
 
     private void Awake()
     {
-        rect = GetComponent<RectTransform>();
         _lines = new List<LineScript>();
+        boxCollider= GetComponent<BoxCollider2D>();
     }
 
     void Update()
@@ -33,18 +37,36 @@ public class DrawManager : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            _currentLine = Instantiate(_linePrefab.gameObject, mousePos, Quaternion.identity,transform).GetComponent<LineScript>();
-            _lines.Add(_currentLine);
+            if(boxCollider.bounds.Contains(mousePos)) 
+            {
+                _currentLine = Instantiate(_linePrefab.gameObject, mousePos, Quaternion.identity, transform).GetComponent<LineScript>();
+                _lines.Add(_currentLine);
+            }
         }
 
         if (Input.GetMouseButton(0))
         {
-            if (_currentLine != null)
+            if (boxCollider.bounds.Contains(mousePos))
             {
-                _currentLine.SetPosition(mousePos);
+                if (outOfBounds)
+                {
+                    _currentLine = Instantiate(_linePrefab.gameObject, mousePos, Quaternion.identity, transform).GetComponent<LineScript>();
+                    outOfBounds = false;
+                    _lines.Add(_currentLine);
+                }
+
+                if (_currentLine != null)
+                {
+                    _currentLine.SetPosition(mousePos);
+                }
+            }
+            else
+            {
+                outOfBounds= true;
             }
         }
     }
+
     
     public void DeletLast()
     {

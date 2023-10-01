@@ -263,12 +263,43 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1249422606486700522, guid: 81ad8ee35c92f334c8ac4c0c1410a225, type: 3}
   m_PrefabInstance: {fileID: 566284614}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 198635516}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f95f293f7dcaa9540b9c691011015927, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &198635516 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1249422606486700521, guid: 81ad8ee35c92f334c8ac4c0c1410a225, type: 3}
+  m_PrefabInstance: {fileID: 566284614}
+  m_PrefabAsset: {fileID: 0}
+--- !u!61 &198635518
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198635516}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -997.4225, y: -734.1698}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 16.01001, y: 6.217224}
+  m_EdgeRadius: 0
 --- !u!1 &251655409
 GameObject:
   m_ObjectHideFlags: 0
@@ -467,12 +498,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 44819946139840534, guid: 81ad8ee35c92f334c8ac4c0c1410a225, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 1365.2473
+      objectReference: {fileID: 0}
+    - target: {fileID: 44819946139840534, guid: 81ad8ee35c92f334c8ac4c0c1410a225, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 466.676
+      value: 369.7045
+      objectReference: {fileID: 0}
+    - target: {fileID: 44819946139840534, guid: 81ad8ee35c92f334c8ac4c0c1410a225, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 997.6236
       objectReference: {fileID: 0}
     - target: {fileID: 44819946139840534, guid: 81ad8ee35c92f334c8ac4c0c1410a225, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 808.85077
+      value: 735.35223
       objectReference: {fileID: 0}
     - target: {fileID: 1249422606486700521, guid: 81ad8ee35c92f334c8ac4c0c1410a225, type: 3}
       propertyPath: m_Name
