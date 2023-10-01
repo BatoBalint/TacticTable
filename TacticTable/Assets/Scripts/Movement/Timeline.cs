@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Timeline : MonoBehaviour
@@ -13,6 +14,13 @@ public class Timeline : MonoBehaviour
     public List<DisksState> DiskStates = new List<DisksState>();
     public int index = 0;
     private int _partialAnimationEndIndex = 0;
+
+    private TimelineUI _timelineUI;
+
+    public void Awake()
+    {
+        _timelineUI = GetComponent<TimelineUI>();
+    }
 
     private void Update()
     {
@@ -88,6 +96,7 @@ public class Timeline : MonoBehaviour
             else
                 Stop();
         }
+        _timelineUI.ReDrawUI();
     }
 
     private void Stop()
@@ -110,6 +119,8 @@ public class Timeline : MonoBehaviour
         timelinePlays = true;
         if (timeMultiplier == 0)
             timeMultiplier = 1;
+
+        _timelineUI.ReDrawUI();
     }
 
     public void SetTimeSpeed(float timeSpeed)
@@ -128,17 +139,17 @@ public class Timeline : MonoBehaviour
         }
     }
 
-    public void Add(Movement move, Transform diskHolder)
+    public void Add(Movement move)
     {
         DisksState disksState;
         if (Moves.Count == 0)
         { 
-            disksState = new DisksState(diskHolder);
+            disksState = new DisksState(DiskScript.DiskScripts);
             DiskStates.Add(disksState);
         }
 
         Moves.Add(move);
-        disksState = new DisksState(diskHolder);
+        disksState = new DisksState(DiskScript.DiskScripts);
         foreach (var disk in move.GetEndPositions())
         {
             disksState.SetDiskPosition(disk.Key, disk.Value);
@@ -162,6 +173,9 @@ public class Timeline : MonoBehaviour
             DiskStates.RemoveAt(0);
         else
             DiskStates.RemoveAt(removeIndex + 1);
+
+        if (Moves.Count == 0)
+            DiskStates.Clear();
     }
 
     public void Insert(int moveIndex, int newMoveIndex)
@@ -201,7 +215,7 @@ public class Timeline : MonoBehaviour
         return JsonConvert.SerializeObject(jsonDictionary);
     }
 
-    public void LoadFromJSON(string jsonString, Transform diskHolder)
+    public void LoadFromJSON(string jsonString)
     {
         // Terminate if there are no disks in the scene
         if (DiskScript.DiskScripts.Count == 0)
@@ -231,8 +245,11 @@ public class Timeline : MonoBehaviour
             List<string> diskStatesList = JsonConvert.DeserializeObject<List<string>>(timelineDic["disksStates"]);
             foreach (var stateString in diskStatesList)
             {
-                DiskStates.Add(DisksStateFactory.LoadDisksState(stateString));
+                DisksState newDiskState = DisksStateFactory.LoadDisksState(stateString);
+                DiskStates.Add(newDiskState);
             }
         }
+
+        _timelineUI.ReDrawUI();
     }
 }

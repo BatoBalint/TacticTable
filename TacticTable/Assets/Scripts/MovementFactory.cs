@@ -11,7 +11,6 @@ public class MovementFactory
 
         Dictionary<string, string> movementDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(movementAsJson);
         string mode = movementDic["movementType"] ?? "";
-
         switch (mode)
         {
             case "linear":
@@ -23,7 +22,6 @@ public class MovementFactory
             default:
                 break;
         }
-
         return movement;
     }
 

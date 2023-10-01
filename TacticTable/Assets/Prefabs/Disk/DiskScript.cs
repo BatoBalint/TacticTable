@@ -37,6 +37,9 @@ public class DiskScript : MonoBehaviour
 
     public void Awake()
     {
+        if (DiskScripts.Count == 0)
+            _nextId = 0;
+
         _circleCollider = transform.GetComponent<CircleCollider2D>();
         PositionAtSelection = Vector3.zero;
         if (IsBall)
@@ -55,6 +58,7 @@ public class DiskScript : MonoBehaviour
     public void OnDestroy()
     {
         UnselectDisk();
+        DiskScripts.Remove(this);
     }
 
     public void Update()

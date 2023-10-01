@@ -10,11 +10,11 @@ public class DisksStateFactory
     {
         DisksState disksState = new DisksState(new List<DiskScript>());
         Dictionary<int, string> disksStateDic = JsonConvert.DeserializeObject<Dictionary<int, string>>(disksStateAsJson);
-
+        
         foreach (var diskPosPair in disksStateDic)
         {
             DiskScript[] disks = DiskScript.DiskScripts.Where(d => d.Id == diskPosPair.Key).ToArray();
-            DiskScript disk = (disks.Length < 0) ? disks[0] : null;
+            DiskScript disk = (disks.Length > 0) ? disks[0] : null;
             if (disk != null)
             {
                 disksState.AddToPositions(disk, ConvertToVector3(diskPosPair.Value));

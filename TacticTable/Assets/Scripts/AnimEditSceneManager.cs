@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,7 +15,7 @@ public class AnimEditSceneManager : MonoBehaviour
 
         if (ApplicationStateManager.TimelineToLoad != null)
         {
-            Debug.Log("Animation found: " + ApplicationStateManager.AnimationName);
+            _timeline.LoadFromJSON(ApplicationStateManager.TimelineToLoad);
         }
     }
 
@@ -40,6 +41,7 @@ public class AnimEditSceneManager : MonoBehaviour
     private void ResetScene()
     {
         while (DiskScript.SelectedDisks.Count > 0) DiskScript.SelectedDisks[0].UnselectDisk();
+        DiskScript.DiskScripts.Clear();
         _timeline.ClearMoves();
     }
 }

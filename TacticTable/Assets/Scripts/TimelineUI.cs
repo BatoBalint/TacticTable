@@ -15,28 +15,24 @@ public class TimelineUI : MonoBehaviour
     private void Awake()
     {
         _timeline = GetComponent<Timeline>();
-        if (_timeline == null)
-        {
-            Debug.Log("Couldnt find component");
-        }
     }
 
-    public void UpdateTimeline()
+    public void ReDrawUI()
     {
         foreach (Transform t in _timelineItemHolder.transform) 
         {
             Destroy(t.gameObject);
         }
+        int index = 0;
         foreach (Movement move in _timeline.Moves)
         {
-            if (move.GetType() != typeof(DisksState))
-            { 
-                GameObject newTimelineItem = Instantiate(_timelineItem, _timelineItemHolder.transform);
-
-                string animationName = move.movementName;
-
-                newTimelineItem.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = animationName;
-            }
+            GameObject newTimelineItem = Instantiate(_timelineItem, _timelineItemHolder.transform);
+            string animationName = move.movementName;
+            newTimelineItem.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = animationName;
+            
+            if (index == _timeline.index && _timeline.timelinePlays)
+                newTimelineItem.GetComponent<TimelineItemScript>().Highlight();
+            ++index;
         }
     }
 }

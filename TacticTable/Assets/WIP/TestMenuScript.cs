@@ -32,7 +32,7 @@ public class TestMenuScript : MonoBehaviour
 
     public void Func1()
     {
-        LinearMovement move1 = new LinearMovement(_diskHolder.GetChild(0).gameObject, new Vector3(3, 3, 0), new Vector3(3, 0, 0));
+        /*LinearMovement move1 = new LinearMovement(_diskHolder.GetChild(0).gameObject, new Vector3(3, 3, 0), new Vector3(3, 0, 0));
         LinearMovement move2 = new LinearMovement(_diskHolder.GetChild(1).gameObject, new Vector3(-3, 3, 0), new Vector3(3, 3, 0));
         LinearMovement move3 = new LinearMovement(_diskHolder.GetChild(2).gameObject, new Vector3(-3, 0, 0), new Vector3(-3, 3, 0));
 
@@ -43,7 +43,7 @@ public class TestMenuScript : MonoBehaviour
         _jsonString = _timeline.ToJSON();
         _debugText.text += _jsonString;
 
-        _timelineUI.UpdateTimeline();
+        _timelineUI.ReDrawUI();*/
     }
 
     public void Func2()
@@ -59,13 +59,13 @@ public class TestMenuScript : MonoBehaviour
     public void Func4()
     {
         _timeline.ClearMoves();
-        _timelineUI.UpdateTimeline();
+        _timelineUI.ReDrawUI();
     }
 
     public void Func5()
     {
-        _timeline.LoadFromJSON(_jsonString, _diskHolder);
-        _timelineUI.UpdateTimeline();
+        _timeline.LoadFromJSON(_jsonString);
+        _timelineUI.ReDrawUI();
     }
 
     public void Test1()
