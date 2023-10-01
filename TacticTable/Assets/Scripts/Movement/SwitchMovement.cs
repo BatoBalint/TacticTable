@@ -66,15 +66,15 @@ public class SwitchMovement : Movement
 
     public override string ToJSON()
     {
-        Dictionary<string, dynamic> dic = new Dictionary<string, dynamic>();
+        Dictionary<string, string> dic = new Dictionary<string, string>();
 
         DiskScript diskScript = disk.GetComponent<DiskScript>();
         DiskScript otherDiskScript = otherDisk.GetComponent<DiskScript>();
 
         dic.Add("movementType", "switch");
-        dic.Add("diskIds", new int[] { diskScript.Id, otherDiskScript.Id });
-        dic.Add("diskPos", new float[] { startPos.x, startPos.y });
-        dic.Add("otherDiskPos", new float[] { otherStartPos.x, otherStartPos.y });
+        dic.Add("diskIds", disk.GetComponent<DiskScript>().Id + "," + otherDisk.GetComponent<DiskScript>().Id);
+        dic.Add("diskPos", string.Format("{0},{1}", startPos.x, startPos.y));
+        dic.Add("otherDiskPos", string.Format("{0},{1}", otherStartPos.x, otherStartPos.y));
 
         return JsonConvert.SerializeObject(dic);
     }

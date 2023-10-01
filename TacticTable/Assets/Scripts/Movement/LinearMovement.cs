@@ -20,7 +20,7 @@ public class LinearMovement : Movement
 
     public override bool Animate(float time)
     {
-        // Ensure the time is between 0 and 1
+        // Ensure the Time is between 0 and 1
         time = Mathf.Clamp01(time);
 
         Vector3 newPosition = Vector3.Lerp(startPos, endPos, time);
@@ -39,11 +39,11 @@ public class LinearMovement : Movement
 
     public override string ToJSON()
     {
-        Dictionary<string, dynamic> dic = new Dictionary<string, dynamic>();
+        Dictionary<string, string> dic = new Dictionary<string, string>();
         dic.Add("movementType", "linear");
-        dic.Add("diskId", disk.GetComponent<DiskScript>().Id);
-        dic.Add("startPos", new float[] { startPos.x, startPos.y });
-        dic.Add("endPos", new float[] { endPos.x, endPos.y });
+        dic.Add("diskId", disk.GetComponent<DiskScript>().Id.ToString());
+        dic.Add("startPos", string.Format("{0},{1}", startPos.x, startPos.y));
+        dic.Add("endPos", string.Format("{0},{1}", endPos.x, endPos.y));
 
         return JsonConvert.SerializeObject(dic);
     }

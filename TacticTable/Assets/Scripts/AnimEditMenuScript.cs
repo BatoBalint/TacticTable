@@ -1,4 +1,7 @@
 using System;
+using System.Collections;
+using System.Net.Http.Headers;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,28 +13,39 @@ public class AnimEditMenuScript : MonoBehaviour
     private Transform _diskHolder;
     [SerializeField]
     private Timeline _timeline;
-    private TimelineUI _timelineUIref;
+    private TimelineUI _timelineUI;
+
+    // Save popup
+    [SerializeField]
+    private Transform _savePopUp;
+    [SerializeField]
+    private TextMeshProUGUI _saveNameInput;
+    [SerializeField]
+    private TextMeshProUGUI _feedbackText;
 
     [SerializeField]
     private bool _autoMoveOnDiskMove = true;
+    private StorageManager _storageManager;
 
+    // Animation management
     private delegate void NoParamVoidFunc();
     private NoParamVoidFunc _animationModeUpdate;
     private AnimationMode _animationMode = AnimationMode.None;
 
     private void Awake()
     {
-        _timelineUIref = _timeline.GetComponent<TimelineUI>();
+        _timelineUI = _timeline.GetComponent<TimelineUI>();
         if (AnimEditEventSystem.Instance != null)
         { 
             AnimEditEventSystem.Instance.onAnimMenuButtonClick += ToggleMode;
             AnimEditEventSystem.Instance.onDiskPositionChange += DiskPositionChange;
         }
+        _storageManager = new StorageManager();
     }
 
     private void Start()
     {
-        _timeline.SaveDiskPositions(_diskHolder);
+        _timeline.DiskStates.Add(new DisksState(DiskScript.DiskScripts));
     }
 
     private void OnDestroy()
@@ -111,14 +125,14 @@ public class AnimEditMenuScript : MonoBehaviour
         }
     }
 
-    // Called every time a disk is moved by the user
+    // Called every Time a disk is moved by the user
     private void DiskPositionChange(DiskScript disk)
-    {
-        if (_timeline.disksStates.Count == 1 && _animationMode == AnimationMode.None)
+    { 
+        if (_timeline.DiskStates.Count == 1 && _animationMode == AnimationMode.None)
         {
-            _timeline.disksStates[0].SetDiskPosition(disk, disk.transform.position);
+            _timeline.DiskStates[0].SetDiskPosition(disk, disk.transform.position);
         }
-        else if (_autoMoveOnDiskMove && _timeline.moves.Count > 0 && _animationMode == AnimationMode.None)
+        else if (_autoMoveOnDiskMove && _timeline.Moves.Count > 0 && _animationMode == AnimationMode.None)
         {
             SetMode(AnimationMode.Move);
         }
@@ -132,8 +146,8 @@ public class AnimEditMenuScript : MonoBehaviour
             if (DiskScript.SelectedDisks.Count > 0)
             {
                 GameObject disk = DiskScript.SelectedDisks[0].gameObject;
-                _timeline.Add(new LinearMovement(disk, disk.GetComponent<DiskScript>().PositionAtSelection, disk.transform.position), _diskHolder);
-                _timelineUIref.UpdateTimeline();
+                _timeline.Add(new LinearMovement(disk, disk.GetComponent<DiskScript>().PositionAtSelection, disk.transform.position));
+                _timelineUI.ReDrawUI();
 
                 ResetAfterAddingMovement();
             }
@@ -151,11 +165,11 @@ public class AnimEditMenuScript : MonoBehaviour
 
                 SwitchMovement swMovement = new SwitchMovement(disk1, disk2, disk1Script.PositionAtSelection, disk2Script.PositionAtSelection);
 
-                _timeline.Add(swMovement, _diskHolder);
-                _timelineUIref.UpdateTimeline();
+                _timeline.Add(swMovement);
+                _timelineUI.ReDrawUI();
 
                 _timeline.SetTimeSpeed(4);
-                _timeline.AnimateAtIndex(_timeline.moves.Count - 1);
+                _timeline.AnimateAtIndex(_timeline.Moves.Count - 1);
 
                 ResetAfterAddingMovement();
             }
@@ -175,18 +189,59 @@ public class AnimEditMenuScript : MonoBehaviour
 
     public void DeleteButtonClick()
     {
-        _timeline.RemoveAt(_timeline.moves.Count - 1);
-        _timelineUIref.UpdateTimeline();
+        _timeline.RemoveAtSelection();
     }
 
-    public void SaveButtonClick()
-    { 
-        
-    }
-
-    public void TestFunc()
+    public void InitiateSave()
     {
-        _timeline.Play();
+        StartCoroutine(FadeSavePopup(false));
+    }
+
+    public void Save()
+    {
+        bool success = true;
+        try
+        {
+            _storageManager.SaveAnimation(_timeline, _saveNameInput.text);
+        }
+        catch (Exception ex)
+        {
+            success = false;
+            _feedbackText.text = ex.Message;
+        }
+
+        if (success)
+        {
+            StartCoroutine(FadeSavePopup(true));
+        }
+    }
+
+    public void CancelSave()
+    {
+        StartCoroutine(FadeSavePopup(true));
+    }
+
+    private IEnumerator FadeSavePopup(bool backward)
+    {
+        CanvasGroup canvasGroup = _savePopUp.GetComponent<CanvasGroup>();
+        float duration = 0.1f;
+        float time = 0;
+
+        if (!backward)
+        {
+            _savePopUp.gameObject.SetActive(true);
+            canvasGroup.alpha = 0;
+        }
+
+        while (time < 1)
+        {
+            canvasGroup.alpha = Math.Clamp(backward ? 1 - time : time, 0, 1);
+            time += Time.deltaTime / duration;
+            yield return null;
+        }
+
+        canvasGroup.alpha = backward ? 0 : 1;
+        if (backward) _savePopUp.gameObject.SetActive(false);
     }
 }
 

@@ -1,39 +1,52 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Timeline : MonoBehaviour
 {
-    public bool timelinePlays = false;
-    public float timeMultiplier = 1.0f;
-    public float time = 0.0f;
+    public List<Movement> Moves = new List<Movement>();
+    public List<DisksState> DiskStates = new List<DisksState>();
+
+    private TimelineUI _timelineUI;
+    
+    public int Index = 0;
+    public bool TimelinePlays = false;
+    public float Time = 0.0f;
+    public float TimeMultiplier = 1.0f;
     private float _animationTime = 0.0f;
-    public List<Movement> moves = new List<Movement>();
-    public List<DisksState> disksStates = new List<DisksState>();
-    public int index = 0;
+    
     private int _partialAnimationEndIndex = 0;
+
+    public int SelectedIndex = -1;
+
+    public void Awake()
+    {
+        _timelineUI = GetComponent<TimelineUI>();
+    }
 
     private void Update()
     {
-        if (_partialAnimationEndIndex != 0 && index == _partialAnimationEndIndex)
+        if (_partialAnimationEndIndex != 0 && Index == _partialAnimationEndIndex)
         {
             Stop();
             _partialAnimationEndIndex = 0;
         }
 
-        if (timelinePlays) Animate();
+        if (TimelinePlays) Animate();
     }
 
     public void AnimateAtIndex(int moveIndex)
     { 
         _partialAnimationEndIndex = moveIndex + 1;
-        index = moveIndex;
+        Index = moveIndex;
         Play();
     }
 
     private void Animate()
     {
-        if (index == moves.Count)
+        if (Index == Moves.Count)
         {
             Stop();
             return;
@@ -42,18 +55,18 @@ public class Timeline : MonoBehaviour
         IncreaseTime();
 
         bool timelineEnded = false;
-        if (time < 0f)
+        if (Time < 0f)
         {
-            time = 0;
+            Time = 0;
             timelineEnded = true;
         }
-        else if (time > 1f)
+        else if (Time > 1f)
         {
-            time = 1;
+            Time = 1;
             timelineEnded = true;
         }
 
-        bool animationFinished = moves[index].Animate(_animationTime);
+        bool animationFinished = Moves[Index].Animate(_animationTime);
 
         if (timelineEnded || animationFinished)
             NextAnimation();
@@ -61,65 +74,72 @@ public class Timeline : MonoBehaviour
 
     private void IncreaseTime()
     {
-        time += Time.deltaTime * (timeMultiplier + Math.Abs(0.5f - time));
-        _animationTime = AnimationCurve.EaseInOut(0, 0, 1, 1).Evaluate(time);
+        Time += UnityEngine.Time.deltaTime * (TimeMultiplier + Math.Abs(0.5f - Time));
+        _animationTime = AnimationCurve.EaseInOut(0, 0, 1, 1).Evaluate(Time);
     }
 
     private void NextAnimation()
     {
-        if (time <= 0f)
+
+        if (Time <= 0f)
         {
-            if (index > 0)
+            if (Index > 0)
             { 
-                index--;
-                time = 1f;
+                Index--;
+                Time = 1f;
             }    
             else
                 Stop();
         }
-        else if (time >= 1f)
+        else if (Time >= 1f)
         {
-            if (index < moves.Count - 1)
+            if (Index < Moves.Count - 1)
             { 
-                index++;
-                time = 0f;
+                Index++;
+                Time = 0f;
             }
             else
                 Stop();
         }
+        _timelineUI.ReDrawUI();
     }
 
     private void Stop()
     {
         Pause();
-        time = 0f;
-        timeMultiplier = 1;
-        index = 0;
+        Time = 0f;
+        TimeMultiplier = 1;
+        Index = 0;
+        _partialAnimationEndIndex = 0;
+
+        _timelineUI.ReDrawUI();
     }
 
     private void Pause()
     {
-        timelinePlays = false;
+        TimelinePlays = false;
     }
 
     public void Play()
     {
-        if (index == 0) disksStates[0].ResetDisksToSavedPosition();
+        if (Index == 0 && DiskStates.Count > 0) DiskStates[0].ResetDisksToSavedPosition();
 
-        timelinePlays = true;
-        if (timeMultiplier == 0)
-            timeMultiplier = 1;
+        TimelinePlays = true;
+        if (TimeMultiplier == 0)
+            TimeMultiplier = 1;
+
+        _timelineUI.ReDrawUI();
     }
 
     public void SetTimeSpeed(float timeSpeed)
     {
         if (timeSpeed != 0)
         {
-            timeMultiplier = timeSpeed;
+            TimeMultiplier = timeSpeed;
             if (timeSpeed < 0)
-                time = 1;
+                Time = 1;
             else if (timeSpeed > 0)
-                time = 0;
+                Time = 0;
         }
         else
         {
@@ -127,58 +147,138 @@ public class Timeline : MonoBehaviour
         }
     }
 
-    public void Add(Movement move, Transform diskHolder)
+    public void Add(Movement move)
     {
-        moves.Add(move);
-        DisksState disksState = new DisksState(diskHolder);
+        DisksState disksState;
+        if (Moves.Count == 0)
+        { 
+            disksState = new DisksState(DiskScript.DiskScripts);
+            DiskStates.Add(disksState);
+        }
+
+        Moves.Add(move);
+        disksState = new DisksState(DiskScript.DiskScripts);
         foreach (var disk in move.GetEndPositions())
         {
             disksState.SetDiskPosition(disk.Key, disk.Value);
         }
-        disksStates.Add(disksState);
-    }
-
-    public void SaveDiskPositions(Transform diskHolder)
-    {
-        disksStates.Add(new DisksState(diskHolder));
+        DiskStates.Add(disksState);
     }
 
     public void ClearMoves()
     {
-        while (moves.Count > 0)
-        {
-            moves.RemoveAt(0);
-        }
+        Moves.Clear();
+        DiskStates.Clear();
+    }
+
+    public void RemoveAtSelection()
+    {
+        RemoveAt(SelectedIndex);
     }
 
     public void RemoveAt(int removeIndex)
     {
-        if (removeIndex < 1 || removeIndex > moves.Count - 1)
+        if (removeIndex < 0 || removeIndex >= Moves.Count)
             return;
 
-        moves.RemoveAt(removeIndex);
-        disksStates.RemoveAt(removeIndex + 1);
+        Moves.RemoveAt(removeIndex);
+        if (removeIndex == 0)
+            DiskStates.RemoveAt(0);
+        else
+            DiskStates.RemoveAt(removeIndex + 1);
+
+        if (Moves.Count == 0)
+            DiskStates.Clear();
+
+        _timelineUI.ReDrawUI();
     }
 
     public void Insert(int moveIndex, int newMoveIndex)
     {
-        if (moveIndex == newMoveIndex || moveIndex < 0 || moveIndex >= moves.Count || newMoveIndex < 0 || newMoveIndex > moves.Count)
+        if (moveIndex == newMoveIndex || moveIndex < 0 || moveIndex >= Moves.Count || newMoveIndex < 0 || newMoveIndex >= Moves.Count)
             return;
 
-        Movement move = moves[moveIndex];
-        moves.RemoveAt(moveIndex);
+        Movement move = Moves[moveIndex];
+        Moves.RemoveAt(moveIndex);
 
         if (newMoveIndex > moveIndex)
             newMoveIndex--;
 
-        moves.Insert(newMoveIndex, move);
+        Moves.Insert(newMoveIndex, move);
     }
 
-    public Dictionary<string, dynamic> ToJSON()
+    public void SelectMovement(int index)
     {
-        Dictionary<string, dynamic> jsonDictionary = new Dictionary<string, dynamic>();
-        
+        if (index < 0 || index >= Moves.Count)
+            return;
 
-        return jsonDictionary;
+        if (index == SelectedIndex)
+        { 
+            SelectedIndex = -1;
+            return;
+        }
+
+        SelectedIndex = index;
+    }
+
+    public string ToJSON()
+    {
+        Dictionary<string, string> jsonDictionary = new Dictionary<string, string>();
+        
+        // Save moves
+        List<string> movesAsJsonString = new List<string>();
+        foreach (var move in Moves)
+        {
+            movesAsJsonString.Add(move.ToJSON());
+        }
+        jsonDictionary.Add("moves", JsonConvert.SerializeObject(movesAsJsonString));
+
+        // Save diskstates
+        List<string> diskStatesAsJsonString = new List<string>();
+        foreach (var diskState in DiskStates)
+        {
+            diskStatesAsJsonString.Add(diskState.ToJSON());
+        }
+        jsonDictionary.Add("disksStates", JsonConvert.SerializeObject(diskStatesAsJsonString));
+
+        return JsonConvert.SerializeObject(jsonDictionary);
+    }
+
+    public void LoadFromJSON(string jsonString)
+    {
+        // Terminate if there are no disks in the scene
+        if (DiskScript.DiskScripts.Count == 0)
+            return;
+
+        ClearMoves();
+
+        Dictionary<string, string> timelineDic = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonString);
+
+        // Load movements if the list is in the dictionary
+        if (timelineDic["moves"] != null)
+        {
+            List<string> movesList = JsonConvert.DeserializeObject<List<string>>(timelineDic["moves"]);
+            foreach (var moveString in movesList)
+            {
+                Movement move = MovementFactory.LoadMovement(moveString);
+                if (move != null)
+                { 
+                    Moves.Add(move);
+                } 
+            }
+        }
+
+        // Load diskstates if the list is in the dictionary
+        if (timelineDic["disksStates"] != null)
+        {
+            List<string> diskStatesList = JsonConvert.DeserializeObject<List<string>>(timelineDic["disksStates"]);
+            foreach (var stateString in diskStatesList)
+            {
+                DisksState newDiskState = DisksStateFactory.LoadDisksState(stateString);
+                DiskStates.Add(newDiskState);
+            }
+        }
+
+        _timelineUI.ReDrawUI();
     }
 }

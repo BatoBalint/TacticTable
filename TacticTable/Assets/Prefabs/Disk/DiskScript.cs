@@ -9,15 +9,17 @@ using UnityEngine;
 public class DiskScript : MonoBehaviour
 {
     // Global variables
+    public static List<DiskScript> DiskScripts = new List<DiskScript>();
     public static List<DiskScript> SelectedDisks = new List<DiskScript>();
     public static bool SelectOnMove = false;
+    private static int _nextId = 0;
 
+    // Public properties
     public bool Selectable = true;
     public bool IsBall = false;
     public bool IsBlue = false;
-    public int Id = -1;
+    public int Id = -1;            // Ball: -1, Disks: 0, 1, ...
 
-    private CircleCollider2D _circleCollider;
 
     // Selection related variables
     [SerializeField]
@@ -26,16 +28,37 @@ public class DiskScript : MonoBehaviour
     private bool _diskIsSelected = false;
 
     // Movement related variables
+    private CircleCollider2D _circleCollider;
     private bool _followFinger = false;
     private int _fingerId = -1;
-    private float _touchStart = 0;      // Stores the time at touch start
+    private float _touchStart = 0;      // Stores the Time at touch start
     private Vector3 _touchOffset;
     private float _moveSinceGrab = 0f;  // distance traveld since grab event
 
     public void Awake()
     {
+        if (DiskScripts.Count == 0)
+            _nextId = 0;
+
         _circleCollider = transform.GetComponent<CircleCollider2D>();
         PositionAtSelection = Vector3.zero;
+        if (IsBall)
+        {
+            Id = -1;
+        }
+        else 
+        {
+            Id = _nextId;
+            ++_nextId;
+        }
+
+        DiskScripts.Add(this);
+    }
+
+    public void OnDestroy()
+    {
+        UnselectDisk();
+        DiskScripts.Remove(this);
     }
 
     public void Update()
@@ -109,18 +132,19 @@ public class DiskScript : MonoBehaviour
 
     public void SelectDisk()
     {
-        if (Selectable)
-        {
-            _diskSelectionMarker.SetActive(true);
-            _diskIsSelected = true;
+        if (_diskIsSelected || !Selectable) return;
 
-            PositionAtSelection = transform.position;
-            SelectedDisks.Add(this);
-        }
+        _diskSelectionMarker.SetActive(true);
+        _diskIsSelected = true;
+
+        PositionAtSelection = transform.position;
+        SelectedDisks.Add(this);
     }
 
     public void UnselectDisk()
     {
+        if (!_diskIsSelected) return;
+
         _diskSelectionMarker.SetActive(false);
         _diskIsSelected = false;
 

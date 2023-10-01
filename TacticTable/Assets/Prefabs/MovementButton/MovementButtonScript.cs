@@ -63,4 +63,9 @@ public class MovementButtonScript : MonoBehaviour
         GetComponent<Image>().color = Color.white;
         _selected = false;
     }
+
+    public static void ClearStatics()
+    {
+        buttons.Clear();
+    }
 }
