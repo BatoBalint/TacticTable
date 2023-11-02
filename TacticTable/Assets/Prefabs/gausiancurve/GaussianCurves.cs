@@ -4,7 +4,7 @@ public class GaussianCurves : MonoBehaviour
 {
     public int numberOfPoints = 100;
     public float standardDeviation = 1f;
-
+    public float test = 0f;
     public GameObject startPosition;
     public GameObject endPosition;
 
@@ -14,35 +14,40 @@ public class GaussianCurves : MonoBehaviour
     {
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.positionCount = numberOfPoints * 2; // Double the points to accommodate both curves
-
-        DrawGaussianCurves(startPosition.transform.position, endPosition.transform.position);
+        
+         DrawGaussianCurvesalmost(startPosition.transform.position, endPosition.transform.position);
     }
-
-    void DrawGaussianCurves(Vector3 start, Vector3 end)
+    void DrawGaussianCurvesalmost(Vector3 start, Vector3 end)
     {
         float interval = 1f / numberOfPoints; // Adjust interval based on the range you want to cover
 
-        float midpointX = (start.x + end.x) * 0.5f; // Calculate midpoint of x-coordinates
+        Vector3 midpoint = (start + end) * 0.5f; // Calculate midpoint of both x and y coordinates
 
         for (int i = 0; i < numberOfPoints; i++)
         {
             float t = i * interval;
-            float x = Mathf.Lerp(start.x, end.x, t); // Interpolate x between start and end
+            Vector3 pointOnLine = Vector3.Lerp(start, end, t); // Point on the line between start and end
 
-            // Right-side up curve with peak between half the two points
-            float y1 = Mathf.Lerp(start.y, end.y, t);
-            y1 += GaussianFunction(x, midpointX, standardDeviation); // Add Gaussian function to y
+            // Calculate Gaussian offset based on the distance from the midpoint
+            float distanceToMidpoint = Vector3.Distance(midpoint, pointOnLine);
+            float gaussianValue = GaussianFunction(distanceToMidpoint, 0f, standardDeviation);
 
-            // Upside down curve (subtract Gaussian function from y)
-            float y2 = Mathf.Lerp(start.y, end.y, t);
-            y2 -= GaussianFunction(x, midpointX, standardDeviation); // Subtract Gaussian function from y
+            // Calculate perpendicular vector to the line
+            // Vector3 perpendicular = new Vector3(midpoint.y - pointOnLine.y, pointOnLine.x - midpoint.x, 0f).normalized;
+            Vector3 lineDirection = (end - start).normalized;
+            Vector3 perpendicular = new Vector3(-lineDirection.y, lineDirection.x, 0f).normalized;
+
+
+            // Calculate points for the Gaussian curves
+            Vector3 curvePoint1 = pointOnLine + perpendicular * gaussianValue;
+            Vector3 curvePoint2 = pointOnLine - perpendicular * gaussianValue;
 
             // Set positions for both curves
-            lineRenderer.SetPosition(i, new Vector3(x, y1, 0f)); // Right-side up curve
-            lineRenderer.SetPosition(i + numberOfPoints, new Vector3(x, y2, 0f)); // Upside down curve
+            lineRenderer.SetPosition(i, curvePoint1); // Right-side up curve
+            lineRenderer.SetPosition(i + numberOfPoints, curvePoint2); // Upside down curve
         }
     }
-
+   
     public float GaussianFunction(float x, float mean, float stdDev)
     {
         float exponent = -(Mathf.Pow(x - mean, 2) / (2 * Mathf.Pow(stdDev, 2)));
