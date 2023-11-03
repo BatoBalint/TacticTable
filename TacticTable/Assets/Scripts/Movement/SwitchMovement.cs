@@ -31,6 +31,7 @@ public class SwitchMovement : Movement
     private float CalculateArc()
     {
         float distance = Vector3.Distance(startPos, otherStartPos);
+        Debug.Log("usethis here calculate the arc");
         return Mathf.Pow(distance - 1.3f, 1.39f);
     }
 
