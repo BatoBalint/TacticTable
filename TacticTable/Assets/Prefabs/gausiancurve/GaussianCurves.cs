@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class GaussianCurves : MonoBehaviour
 {
@@ -8,14 +9,31 @@ public class GaussianCurves : MonoBehaviour
     public GameObject startPosition;
     public GameObject endPosition;
 
-    LineRenderer lineRenderer;
+    public LineRenderer lineRenderer;
+    public LineRenderer lineRenderer2;
+    Vector3[] tomb = new Vector3[100]; // Creates an integer array of size 5
+    Vector3[] tomb2 = new Vector3[100]; // Creates an integer array of size 5
+
 
     void Update()
     {
-        lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.positionCount = numberOfPoints * 2; // Double the points to accommodate both curves
-        
-         DrawGaussianCurvesalmost(startPosition.transform.position, endPosition.transform.position);
+        // Check for mouse button click (left mouse button is 0)
+        if (Input.GetMouseButtonDown(0))
+        {
+            Onclick();
+        }
+    }
+    void Onclick()
+    {
+        // lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer.positionCount = numberOfPoints;
+
+        //lineRenderer2 = GetComponent<LineRenderer>();
+        lineRenderer2.positionCount = numberOfPoints;
+
+        DrawGaussianCurvesalmost(startPosition.transform.position, endPosition.transform.position);
+        StartCoroutine(MoveThroughWaypoints(tomb,startPosition));
+        StartCoroutine(MoveThroughWaypoints(tomb2,endPosition));
     }
     void DrawGaussianCurvesalmost(Vector3 start, Vector3 end)
     {
@@ -44,10 +62,32 @@ public class GaussianCurves : MonoBehaviour
 
             // Set positions for both curves
             lineRenderer.SetPosition(i, curvePoint1); // Right-side up curve
-            lineRenderer.SetPosition(i + numberOfPoints, curvePoint2); // Upside down curve
+            lineRenderer2.SetPosition(numberOfPoints - i - 1, curvePoint2); // Upside down curve
+
+            tomb[i] = curvePoint1;
+            tomb2[numberOfPoints - i - 1] = curvePoint2;
+        }
+        
+
+    }
+    float speed = 40f;
+    IEnumerator MoveThroughWaypoints(Vector3 [] tomb, GameObject obj)
+    {
+        for (int i = 0; i < tomb.Length - 1; i++)
+        {
+            float t = 0f;
+            Vector3 startPos = tomb[i];
+            Vector3 endPos = tomb[i + 1];
+
+            while (t < 1f)
+            {
+                t += Time.deltaTime * speed;
+                obj.transform.position = Vector3.Lerp(startPos, endPos, t);
+                yield return null;
+            }
         }
     }
-   
+
     public float GaussianFunction(float x, float mean, float stdDev)
     {
         float exponent = -(Mathf.Pow(x - mean, 2) / (2 * Mathf.Pow(stdDev, 2)));
