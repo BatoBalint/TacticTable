@@ -14,21 +14,23 @@ public class DrawManager : MonoBehaviour
 
     public const float RESOLUTION = .1f;
 
-    private List<LineScript> _lines;
-
     private BoxCollider2D boxCollider;
 
     private bool outOfBounds = false;
 
+    public List<LineScript> _lines ;
+
     private void Start()
     {
         _cam = Camera.main;
+        DeleteAll();
     }
 
     private void Awake()
     {
         _lines = new List<LineScript>();
         boxCollider= GetComponent<BoxCollider2D>();
+        
     }
 
     void Update()
@@ -70,32 +72,29 @@ public class DrawManager : MonoBehaviour
     public void DeletLast()
     {
         int listLength = _lines.Count;
-        LineScript delet = _lines[listLength-1];
-
-        if (listLength>=2)
+        LineScript delete;
+        if (listLength >= 2)
         {
+            delete = _lines[listLength - 1];
             Destroy(_lines[listLength - 1].gameObject);
-            _lines.Remove(delet);
+            _lines.Remove(delete);
             listLength--;
-            delet = _lines[listLength - 1];
+            delete = _lines[listLength - 1];
             Destroy(_lines[listLength - 1].gameObject);
-            _lines.Remove(delet);
+            _lines.Remove(delete);
         }
     }
 
     public void DeleteAll()
     {
-        int listLength = _lines.Count-1;
-        LineScript delet;
+        int listLength = _lines.Count - 1;
         for (int i = listLength; i >= 0; i--)
         {
-            delet = _lines[i];
             if (_lines[i] != null)
             {
                 Destroy(_lines[i].gameObject);
             }
-            _lines.Remove(delet);
-
+            _lines.RemoveAt(i);
         }
     }
 }
