@@ -16,13 +16,13 @@ public class CustomEventSystem {
         private set { _instance = value; } 
     }
 
-    public event Action<DarkMode> onDarkModeChange;
+    public event Action onDarkModeChange;
 
-    public void ChangeDarkMode(DarkMode dm)
+    public void ChangeDarkMode()
     {
         if(onDarkModeChange != null)
         {
-            onDarkModeChange(dm);
+            onDarkModeChange();
         }
     }
 

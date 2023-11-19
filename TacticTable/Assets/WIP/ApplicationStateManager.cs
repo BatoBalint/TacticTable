@@ -6,4 +6,5 @@ public static class ApplicationStateManager
 {
     public static string TimelineToLoad = null;
     public static string AnimationName = null;
+    public static bool Dark = false;
 }

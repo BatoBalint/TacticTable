@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class DarkMode : MonoBehaviour
 {
-    public bool Dark = false;
+    
     public GameObject DarkBackgroundSprite;
     public GameObject LightBackgroundSprite;
 
@@ -14,20 +14,20 @@ public class DarkMode : MonoBehaviour
     {
         Color c = new Color(36/255f, 59/255f, 110 / 255f);
         
-        if (Dark)
+        if (ApplicationStateManager.Dark)
         {
-            Dark = false;
+            ApplicationStateManager.Dark = false;
             DarkBackgroundSprite.SetActive(false);
             LightBackgroundSprite.SetActive(true);
             Camera.main.backgroundColor = Color.white;
         }
         else
         {
-            Dark = true;
+            ApplicationStateManager.Dark = true;
             LightBackgroundSprite.SetActive(false);
             DarkBackgroundSprite.SetActive(true);
             Camera.main.backgroundColor = c;
         }
-        CustomEventSystem.Instance.ChangeDarkMode(this);
+        CustomEventSystem.Instance.ChangeDarkMode();
     }
 }
