@@ -162,7 +162,26 @@ public class LineRendererSmootherEditor : Editor
     }
     private void DrawSegments()
     {
+        for (int i = 0; i < Curves.Length; i++)
+        {
+            Vector3[] segments = Curves[i].GetSegments(SmoothingSections.intValue);
+            for (int j = 0; j < segments.Length; j++)
+            {
+                Handles.color = Color.white;
+                Handles.DrawLine(segments[j], segments[j + 1]);
 
+                float color = (float)j / segments.Length;
+                Handles.color = new Color(color, color, color);
+                Handles.Label(segments[j], $"C{i} S{j}");
+                Handles.DotHandleCap(EditorGUIUtility.GetControlID(FocusType.Passive), segments[j], Quaternion.identity, 0.05f, EventType.Repaint);
+
+            }
+            Handles.color = Color.white;
+            Handles.Label(segments[segments.Length - 1], $"C{i} S {segments.Length - 1}");
+            Handles.DotHandleCap(EditorGUIUtility.GetControlID(FocusType.Passive), segments[segments.Length-1], Quaternion.identity, 0.05f, EventType.Repaint);
+
+            Handles.DrawLine(segments[segments.Length - 1], Curves[i].EndPosition);
+        }
     }
     private void EnsureCurvesMatchLineRendererPositions()
     {
