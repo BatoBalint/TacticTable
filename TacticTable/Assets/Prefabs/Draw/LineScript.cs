@@ -25,6 +25,7 @@ public class LineScript : MonoBehaviour
             return true;
         }
 
+
         return Vector2.Distance(_renderer.GetPosition(_renderer.positionCount - 1), pos) > DrawManager.RESOLUTION;
     }
 
